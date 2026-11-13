@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<title>Atmos Personalni trener — klijenti, termini i treninzi</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c1512">
+<meta name="description" content="Aplikacija za personalne trenere: klijenti, zakazivanje termina, podsetnici preko SMS-a, Vibera i WhatsApp-a, evidencija treninga, merenja i napredak, paketi. Sinhronizacija na Google Drive.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Atmos Trener">
+<style>
+:root{--acc:#f0782f;--bg:#0c1512;--bg2:#111e1a;--card:#16251f;--card2:#1d3029;--line:rgba(255,255,255,.1);--txt:#eef7f3;--muted:#98b3a8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--p:#60a5fa;--c:#fbbf24;--f:#f472b6;--r:16px;--nav:64px}
+:root[data-theme=light]{--bg:#f4f6f3;--bg2:#e9eee9;--card:#fff;--card2:#f1f4f0;--line:rgba(10,50,35,.12);--txt:#14231c;--muted:#5b6f66;--ok:#059669;--warn:#b45309;--bad:#dc2626;--p:#2563eb;--c:#d97706;--f:#db2777}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding-bottom:calc(var(--nav) + 30px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card2);border-radius:12px;padding:10px 14px;font-size:.9rem}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.5}
+.btn-p{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.btn-d{background:rgba(248,113,113,.15);color:var(--bad);border-color:rgba(248,113,113,.4)}
+.btn-s{padding:6px 10px;font-size:.8rem;border-radius:10px}
+.btn-g{background:none;border-color:transparent;color:var(--muted)}
+.fld{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;font-size:1rem}
+.fld:focus{outline:2px solid var(--acc);outline-offset:-1px}
+select.fld option{color:#000}
+label.l{display:block;font-size:.72rem;color:var(--muted);margin:0 0 4px 2px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
+.top-in{max-width:900px;margin:auto;display:flex;gap:8px;align-items:center}
+.logo{font-weight:800;letter-spacing:.5px;font-size:1rem;white-space:nowrap;flex:1}.logo b{color:var(--acc)}
+.logo img{width:26px;height:26px;border-radius:7px;vertical-align:middle;margin-right:6px}
+.shell{max-width:900px;margin:auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 10px;font-size:.95rem;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.grid{display:grid;gap:10px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.row{display:flex;gap:10px;align-items:center}.sp{justify-content:space-between}.wrap{flex-wrap:wrap}.grow{flex:1;min-width:0}
+.muted{color:var(--muted)}.small{font-size:.8rem}.xs{font-size:.72rem}.b{font-weight:700}
+.stat{background:var(--card2);border-radius:12px;padding:10px;text-align:center}
+.stat small{color:var(--muted);font-size:.7rem;display:block}.stat b{font-size:1.05rem;display:block;margin-top:2px}
+.empty{text-align:center;color:var(--muted);padding:20px 10px;font-size:.9rem}
+.pnav{display:flex;align-items:center;gap:8px;margin-bottom:12px}.pnav .lbl{flex:1;text-align:center;font-weight:700;padding:8px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.pnav button{min-width:46px}
+.bar{height:8px;border-radius:6px;background:var(--card2);overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;border-radius:6px}
+.fi{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:6px;cursor:pointer}
+.fi .n{font-weight:600;font-size:.92rem;word-break:break-word}
+.fi .k{font-weight:700;white-space:nowrap;text-align:right;font-size:.9rem}
+.sec{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin:14px 2px 6px}
+.badge{display:inline-block;padding:2px 7px;border-radius:999px;font-size:.68rem;font-weight:700;background:var(--card2);color:var(--muted);vertical-align:middle}
+.seg{display:flex;background:var(--card2);border-radius:12px;padding:3px;gap:3px}.seg button{flex:1;border:0;background:none;padding:8px 4px;border-radius:9px;font-size:.83rem}.seg button.on{background:var(--acc);color:#fff;font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chips button{padding:7px 11px;font-size:.82rem;border-radius:999px}
+nav.bot{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bg2);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.bot .in{max-width:900px;margin:auto;display:flex;height:var(--nav)}
+nav.bot button{flex:1;border:0;background:none;border-radius:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.68rem;color:var(--muted);padding:4px}
+nav.bot button span{font-size:1.3rem}
+nav.bot button.on{color:var(--acc);font-weight:700}
+.fab{position:fixed;right:16px;bottom:calc(var(--nav) + 16px + env(safe-area-inset-bottom));z-index:25;display:flex;gap:10px}
+.fab button{width:56px;height:56px;border-radius:50%;font-size:1.5rem;padding:0;box-shadow:0 6px 18px rgba(0,0,0,.35)}.fab button.pill{width:auto;border-radius:28px;padding:0 18px;font-size:1rem;font-weight:600;background:var(--card);border:1px solid var(--acc)}
+dialog{border:0;padding:0;background:var(--bg);color:var(--txt);width:100%;max-width:640px;max-height:100%;height:100%;margin:auto}
+@media(min-width:700px){dialog{height:auto;max-height:92vh;border-radius:18px;border:1px solid var(--line)}}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+.dh{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;border-bottom:1px solid var(--line)}
+.dh h2{flex:1;margin:0;font-size:1.02rem}
+.db{padding:12px 12px calc(24px + env(safe-area-inset-bottom))}
+.big{font-size:2rem;font-weight:800}
+.chart{display:flex;gap:4px;align-items:flex-end;height:150px;position:relative;margin-top:6px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.chart .col i{width:100%;max-width:26px;border-radius:5px 5px 2px 2px;background:var(--acc);display:block;min-height:2px}
+.chart .col i.over{background:var(--bad)}.chart .col i.no{background:var(--card2)}
+.chart .col small{font-size:.58rem;color:var(--muted);margin-top:3px;white-space:nowrap}
+.chart .goal{position:absolute;left:0;right:0;border-top:2px dashed var(--ok);opacity:.7;pointer-events:none}
+#toast{position:fixed;left:50%;bottom:calc(var(--nav) + 86px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--txt);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.88rem;z-index:100;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%;text-align:center}
+#toast.on{opacity:1}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+.warnb{background:rgba(251,191,36,.14);border:1px solid rgba(251,191,36,.4);border-radius:12px;padding:10px;font-size:.85rem;margin-bottom:10px}
+.okb{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);border-radius:12px;padding:10px;font-size:.85rem;margin-bottom:10px}
+.sw{display:flex;gap:8px;flex-wrap:wrap}.sw button{width:32px;height:32px;border-radius:50%;padding:0;border:3px solid transparent}.sw button.on{border-color:var(--txt)}
+details summary{cursor:pointer;color:var(--muted);font-size:.85rem;padding:6px 0}
+.coffee-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}.coffee-ov.open{display:flex}
+.coffee-box{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:18px;max-width:380px;width:100%;max-height:92vh;overflow:auto;padding:22px;text-align:center;font-size:.92rem;line-height:1.5;position:relative}
+.coffee-box h3{margin:0 0 10px;font-size:1.1rem;display:block}.coffee-box p{margin:8px 0}
+.coffee-acc{display:inline-block;margin:6px 0;padding:6px 12px;border-radius:10px;background:var(--card2);font-variant-numeric:tabular-nums;letter-spacing:.5px;user-select:all}
+.coffee-qr{width:200px;height:200px;margin:12px auto 4px;background:#fff;border-radius:10px;padding:6px}
+.coffee-x{position:absolute;top:6px;right:10px;width:auto;background:none;border:0;color:var(--txt);font-size:1.6rem;cursor:pointer;line-height:1;padding:4px 8px}
+.coffee-amts{display:flex;gap:6px;justify-content:center;margin-top:12px}.coffee-amts button{width:auto;padding:6px 12px;border-radius:10px;border:1px solid rgba(128,128,128,.45);background:rgba(128,128,128,.15);color:inherit;font:inherit;font-size:.85em;cursor:pointer}.coffee-amts button.on{background:var(--acc);border-color:var(--acc);color:#fff}.coffee-qrv svg{width:100%;height:100%;display:block}.coffee-qrv[hidden]{display:none}
+.coffee-mini{display:inline-block;width:auto;margin-top:8px;padding:5px 12px;font-size:.75rem;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--txt);cursor:pointer}.clk{cursor:pointer}.clk:active{opacity:.85}
+footer{text-align:center;color:var(--muted);font-size:.75rem;padding:10px}
+a{color:var(--acc)}
+
+.av{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.82rem;flex:none;letter-spacing:.3px}
+.srow{display:flex;gap:10px;align-items:center;padding:9px 4px;border-top:1px solid var(--line);cursor:pointer}
+.card .srow:first-of-type,.card h3+.srow{border-top:0}
+.srow .tm{width:46px;text-align:center;flex:none}.srow .tm b{display:block;font-size:.95rem}.srow .tm small{color:var(--muted);font-size:.68rem}
+.srow .n{font-weight:600;font-size:.92rem;word-break:break-word}
+.srow.st-otk{opacity:.55}.srow.st-otk .n{text-decoration:line-through}
+.srow .qa{display:flex;gap:4px}
+.hello{display:flex;justify-content:space-between;align-items:center;margin:2px 2px 12px}
+.al{display:flex;gap:10px;align-items:center;padding:8px 2px;border-top:1px solid var(--line);cursor:pointer}.al:first-of-type{border-top:0}.al>span{font-size:1.1rem}
+.dayc.today{border-color:var(--acc)}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding:8px 12px;border-bottom:1px solid var(--line);position:sticky;top:calc(55px + env(safe-area-inset-top));background:var(--bg);z-index:2}
+.tabs button{flex:none;border:0;background:var(--card2);border-radius:999px;padding:7px 13px;font-size:.84rem}.tabs button.on{background:var(--acc);color:#fff;font-weight:600}
+.cact{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px}
+.cact>*{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:1.2rem;text-decoration:none;color:var(--txt)}
+.cact span{font-size:.7rem;color:var(--muted)}
+.mbtn{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}.mbtn button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px;font-size:.72rem}.mbtn span{font-size:1.15rem}
+.mcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.mcal b{font-size:.68rem;color:var(--muted)}
+.mcal span{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:.78rem;background:var(--card2)}
+.mcal span:empty{background:none}.mcal .td{outline:2px solid var(--acc)}
+.mcal .d-odr{background:var(--ok);color:#06281c;font-weight:700;cursor:pointer}.mcal .d-ndo{background:var(--bad);color:#fff;cursor:pointer}.mcal .d-otk{background:var(--muted);color:var(--bg);cursor:pointer}.mcal .d-zak{border:2px solid var(--p);cursor:pointer}
+.lc{width:100%;height:auto;display:block}
+.tbl{width:100%;border-collapse:collapse;font-size:.84rem}.tbl th{text-align:left;color:var(--muted);font-weight:600;font-size:.72rem;padding:4px 2px;border-bottom:1px solid var(--line)}.tbl td{padding:7px 2px;border-bottom:1px solid var(--line)}.tbl tr[data-act]{cursor:pointer}
+.exb{background:var(--card2);border-radius:12px;padding:8px 10px;margin-bottom:8px}
+.sets{display:grid;gap:4px;margin-top:6px}.set{display:grid;grid-template-columns:22px 1fr 14px 1fr 34px;gap:6px;align-items:center}.set .fld{padding:7px 8px;font-size:.92rem;text-align:center}
+.chips button.btn-p{color:#fff}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="logo"><img src="icon-192.png" alt="">Atmos <b>Trener</b></div>
+  <span id="gdst" class="small muted"></span>
+</div></header>
+<main class="shell" id="app"></main>
+<div class="fab" id="fab"></div>
+<nav class="bot"><div class="in" id="nav"></div></nav>
+<dialog id="dlg"></dialog>
+<dialog id="dlg2"></dialog>
+<input type="file" id="fileIn" accept="application/json,.json" hidden>
+<div id="toast"></div>
+<script>
+'use strict';
+const VER='1.0',KEY='atmosTrener1',APP='Atmos Personalni trener';
+const ACCENTS=['#f0782f','#0f9d78','#3b82f6','#8b5cf6','#e11d48','#eab308'];
+const COLLS=['clients','sessions','measures','packages','templates','exercises'];
+const ST={zak:['Zakazan','📅','var(--p)'],odr:['Održan','✅','var(--ok)'],otk:['Otkazan','🚫','var(--muted)'],ndo:['Nije došao','❌','var(--bad)']};
+const TYPES=['Personalni','Grupni','Online','Konsultacija','Probni'];
+const MEAS=[['kg','Težina','kg'],['fat','Masno tkivo','%'],['mus','Mišićna masa','kg'],['waist','Struk','cm'],['chest','Grudi','cm'],['hips','Kukovi','cm'],['arm','Nadlaktica','cm'],['thigh','Butina','cm'],['calf','List','cm'],['neck','Vrat','cm']];
+const CCOL=['#f0782f','#0f9d78','#3b82f6','#8b5cf6','#e11d48','#eab308','#14b8a6','#ec4899','#64748b','#84cc16'];
+const EXLIB={
+ 'Grudi':['Bench press (ravna klupa)','Bench press (kosa klupa)','Bench press (negativna klupa)','Potisak bučicama','Razvlačenje bučicama','Peck-deck / leptir','Crossover na sajli','Sklekovi','Propadanja (dips)'],
+ 'Leđa':['Mrtvo dizanje','Zgibovi','Lat mašina (privlačenje)','Veslanje šipkom','Veslanje bučicom','Veslanje na sajli (sedeći)','T-bar veslanje','Hiperekstenzije','Pullover'],
+ 'Noge':['Čučanj (šipka)','Prednji čučanj','Goblet čučanj','Leg press','Iskoraci','Bugarski čučanj','Rumunsko mrtvo dizanje','Ekstenzija nogu','Pregib nogu (ležeći)','Hip thrust','Glute bridge','Abdukcija kukova','Podizanje na prste (listovi)','Step-up na klupu'],
+ 'Ramena':['Vojnički potisak','Potisak bučicama sedeći','Arnold potisak','Odručenje bučicama','Predručenje','Rear delt / obrnuti leptir','Face pull','Veslanje uz telo (upright row)','Slegovanje ramenima'],
+ 'Ruke':['Pregib šipkom (biceps)','Pregib bučicama','Hammer pregib','Scott pregib','Pregib na sajli','Francuski potisak','Ekstenzija na sajli (triceps)','Kickback bučicom','Uski bench press'],
+ 'Stomak i core':['Plank','Bočni plank','Trbušnjaci (crunch)','Podizanje nogu u visu','Ruski twist','Mountain climbers','Dead bug','Bird dog','Ab wheel','Pallof press'],
+ 'Kardio':['Traka za trčanje','Bicikl (sobni)','Eliptični trenažer','Veslački ergometar','Stepper','Preskakanje vijače','Hodanje uzbrdo'],
+ 'Funkcionalno':['Burpees','Kettlebell swing','Turkish get-up','Farmer walk','Sanke (sled push)','Battle rope','Box jump','Medicinka (bacanje)','Wall ball','TRX veslanje','Istezanje / mobilnost']};
+const DEF_REM='Zdravo {ime}! 💪 Podsetnik za trening: {datum} u {vreme}h{mesto}. Vidimo se! {trener}';
+const DEF_SUM='Zdravo {ime}! Današnji trening ({datum}):\n{trening}\nOdlično si odradio/la, samo tako! 💪 {trener}';
+const DEF_NOT='Zdravo {ime}! Primetio/la sam da se dugo nismo videli na treningu. Da zakažemo termin ove nedelje? 💪 {trener}';
+
+/* ---------- pomoćne ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const pad=n=>String(n).padStart(2,'0');
+const ds=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>ds(new Date());
+const addDays=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return ds(d)};
+const dayDiff=(a,b)=>Math.round((new Date(a+'T12:00:00')-new Date(b+'T12:00:00'))/864e5);
+const DAYS=['ned','pon','uto','sre','čet','pet','sub'],DAYSF=['nedelja','ponedeljak','utorak','sreda','četvrtak','petak','subota'];
+const MONS=['jan','feb','mar','apr','maj','jun','jul','avg','sep','okt','nov','dec'],MONF=['januar','februar','mart','april','maj','jun','jul','avgust','septembar','oktobar','novembar','decembar'];
+function dlabel(s){const t=today();if(s===t)return'Danas';if(s===addDays(t,-1))return'Juče';if(s===addDays(t,1))return'Sutra';return dshort(s)}
+function dshort(s){const d=new Date(s+'T12:00:00');return DAYS[d.getDay()]+', '+d.getDate()+'. '+MONS[d.getMonth()]+(d.getFullYear()!==new Date().getFullYear()?' '+d.getFullYear():'')}
+function dmsg(s){const t=today();const d=new Date(s+'T12:00:00');const w=DAYSF[d.getDay()]+', '+d.getDate()+'. '+MONS[d.getMonth()];return s===t?'danas ('+w+')':s===addDays(t,1)?'sutra ('+w+')':w}
+const weekStart=s=>{const d=new Date(s+'T12:00:00');const k=(d.getDay()+6)%7;d.setDate(d.getDate()-k);return ds(d)};
+const r1=x=>{const v=Math.round((Number(x)||0)*10)/10;return String(v).replace('.',',')};
+const num=v=>{if(v==null||v==='')return null;const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:null};
+const fmtN=v=>v==null?'':String(v).replace('.',',');
+const money=v=>(Math.round(Number(v)||0)).toLocaleString('sr-RS')+' '+(S().cur||'RSD');
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'dj');
+const tmin=t=>{const m=/^(\d{1,2}):(\d{2})/.exec(t||'');return m?(+m[1])*60+(+m[2]):0};
+const mtime=m=>pad(Math.floor(m/60)%24)+':'+pad(m%60);
+const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+let dDepth=0,dPend=0,dIgnore=0,dSkip=0;
+function openD(d){if(d.open)return;d.showModal();dDepth++;try{history.pushState({atmosDlg:dDepth},'')}catch{}}
+function onDClose(){if(dSkip){dSkip--;return}if(dDepth>0){dDepth--;dPend++;clearTimeout(onDClose.t);onDClose.t=setTimeout(()=>{const n=dPend;dPend=0;if(n){dIgnore++;history.go(-n)}},0)}}
+addEventListener('popstate',()=>{if(dIgnore){dIgnore--;return}const c3=document.getElementById('dlg3'),a=document.getElementById('dlg2'),b=document.getElementById('dlg'),top=c3&&c3.open?c3:a.open?a:b.open?b:null;
+  if(top){dDepth=Math.max(0,dDepth-1);dSkip++;top.close()}});
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2800)}
+
+/* ---------- podaci ---------- */
+function freshSet(){return{theme:'dark',accent:ACCENTS[0],trainer:'',gym:'',phone:'',dur:60,price:'',cur:'RSD',ndoUsed:true,remTpl:DEF_REM,sumTpl:DEF_SUM,notTpl:DEF_NOT,inactive:14}}
+function fresh(){const o={v:1,settings:freshSet(),_mt:{},_lh:{}};COLLS.forEach(k=>o[k]=[]);return o}
+function normDb(x){x=x&&typeof x==='object'?x:{};const o=fresh();o.settings=Object.assign(freshSet(),x.settings||{});
+  COLLS.forEach(k=>o[k]=Array.isArray(x[k])?x[k].filter(r=>r&&r.id):[]);o._mt=x._mt&&typeof x._mt==='object'?x._mt:{};o._lh=x._lh&&typeof x._lh==='object'?x._lh:{};return o}
+let db=(()=>{try{return normDb(JSON.parse(localStorage.getItem(KEY)))}catch{return fresh()}})();
+const S=()=>db.settings;
+function markMt(){const s=gdSingles();for(const k in s){if(!s[k])continue;const h=gdHash(s[k]);if(db._lh[k]!==h){if(db._lh[k]!==undefined)db._mt[k]=Date.now();db._lh[k]=h}}}
+function save(){markMt();try{localStorage.setItem(KEY,JSON.stringify(db))}catch{toast('⚠ Memorija uređaja je puna')}gdSoon()}
+const C=id=>db.clients.find(c=>c.id===id);
+const cname=id=>{const c=C(id);return c?c.name:'(obrisan klijent)'};
+const first=n=>String(n||'').trim().split(/\s+/)[0]||'';
+const initials=n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'?';
+const avatar=(c,sz)=>`<span class="av" style="background:${c&&c.color||'var(--card2)'};${sz?`width:${sz}px;height:${sz}px;font-size:${sz*.38}px`:''}">${esc(initials(c&&c.name))}</span>`;
+const sessOf=cid=>db.sessions.filter(s=>s.cid===cid);
+const sortS=(a,b)=>a.date.localeCompare(b.date)||tmin(a.time)-tmin(b.time);
+const daySess=d=>db.sessions.filter(s=>s.date===d).sort(sortS);
+const nextSess=cid=>{const t=today(),n=new Date(),nm=n.getHours()*60+n.getMinutes();return sessOf(cid).filter(s=>s.status==='zak'&&(s.date>t||(s.date===t&&tmin(s.time)+(s.dur||60)>=nm))).sort(sortS)[0]};
+const lastDone=cid=>sessOf(cid).filter(s=>s.status==='odr').sort(sortS).pop();
+const used=s=>s.status==='odr'||(s.status==='ndo'&&S().ndoUsed);
+/* paket: broj termina u periodu; potrošeno = održani (+ nedolasci ako je tako podešeno) */
+function pkgInfo(p){const ss=sessOf(p.cid).filter(s=>s.pkg===p.id||(!s.pkg&&s.date>=p.start&&(!p.end||s.date<=p.end)&&!s.price));
+  const u=ss.filter(used).length,left=p.count?Math.max(0,p.count-u):null,exp=p.end&&p.end<today();return{u,left,exp,active:!exp&&(left==null||left>0)}}
+const activePkg=cid=>db.packages.filter(p=>p.cid===cid).sort((a,b)=>b.start.localeCompare(a.start)).find(p=>pkgInfo(p).active);
+function age(b){if(!b)return null;const d=new Date(b+'T12:00:00'),n=new Date();let a=n.getFullYear()-d.getFullYear();if(n.getMonth()<d.getMonth()||(n.getMonth()===d.getMonth()&&n.getDate()<d.getDate()))a--;return a>0&&a<120?a:null}
+function bdayIn(b){if(!b)return null;const t=today(),y=+t.slice(0,4);for(const yy of[y,y+1]){const d=yy+b.slice(4);const k=dayDiff(d,t);if(k>=0)return k}return null}
+const measOf=cid=>db.measures.filter(m=>m.cid===cid).sort((a,b)=>a.date.localeCompare(b.date));
+const lastMeas=(cid,k)=>{const a=measOf(cid).filter(m=>m[k]!=null);return a.length?a[a.length-1][k]:null};
+
+/* ---------- poruke: SMS / Viber / WhatsApp ---------- */
+function phoneIntl(p){let s=String(p||'').replace(/[^\d+]/g,'');if(!s)return'';if(s.startsWith('00'))s='+'+s.slice(2);else if(s.startsWith('0'))s='+381'+s.slice(1);else if(!s.startsWith('+'))s=(s.startsWith('381')?'+':'+381')+s;return s}
+function fill(tpl,v){let t=String(tpl||'');for(const k in v)t=t.split('{'+k+'}').join(v[k]==null?'':v[k]);return t.replace(/[ \t]+\n/g,'\n').trim()}
+function msgVars(c,s){return{ime:first(c&&c.name),datum:s?dmsg(s.date):'',vreme:s?s.time:'',trener:S().trainer||'',mesto:S().gym?(' — '+S().gym):'',trajanje:s?(s.dur||60)+' min':''}}
+function workoutText(s){return(s.ex||[]).filter(e=>e.name).map(e=>'• '+e.name+(e.sets&&e.sets.length?': '+e.sets.map(x=>(x.r||'?')+(x.kg?'×'+fmtN(x.kg)+'kg':'')).join(', '):'')+(e.note?' ('+e.note+')':'')).join('\n')||'• '+(s.notes||'trening')}
+async function sendMsg(ch,c,text){const ph=phoneIntl(c&&c.phone);if(!ph&&ch!=='copy'&&ch!=='share'){toast('Klijent nema upisan broj telefona');return false}
+  const dig=ph.replace('+',''),t=encodeURIComponent(text);
+  if(ch==='sms')location.href='sms:'+ph+(isIOS?'&':'?')+'body='+t;
+  else if(ch==='wa')window.open('https://wa.me/'+dig+'?text='+t,'_blank');
+  else if(ch==='viber'){try{await navigator.clipboard.writeText(text);toast('Tekst je kopiran — u Viberu ga samo nalepi')}catch{toast('Viber nema automatski tekst — prepiši poruku')}setTimeout(()=>{location.href='viber://chat?number=%2B'+dig},350)}
+  else if(ch==='share'){try{await navigator.share({text});}catch(e){if(e&&e.name!=='AbortError'){try{await navigator.clipboard.writeText(text);toast('Tekst kopiran')}catch{}}}}
+  else if(ch==='copy'){try{await navigator.clipboard.writeText(text);toast('Tekst kopiran ✔')}catch{toast('Kopiranje nije uspelo')}}
+  return true}
+const msgBtns=(act,extra)=>`<div class="mbtn">${[['sms','💬','SMS'],['viber','🟣','Viber'],['wa','🟢','WhatsApp'],['copy','📋','Kopiraj']].map(x=>`<button data-act="${act}" data-ch="${x[0]}" ${extra||''}><span>${x[1]}</span>${x[2]}</button>`).join('')}</div>`;
+
+/* ---------- stanje ---------- */
+let ui={tab:'danas',week:weekStart(today()),cf:'akt',cq:'',rm:today().slice(0,7)};
+const TABS=[['danas','🏠','Danas'],['kalendar','📅','Kalendar'],['klijenti','👥','Klijenti'],['izvestaji','📊','Izveštaji'],['podesavanja','⚙️','Podešavanja']];
+function render(){document.documentElement.dataset.theme=S().theme==='auto'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):S().theme;
+  document.documentElement.style.setProperty('--acc',S().accent);
+  $('#nav').innerHTML=TABS.map(t=>`<button class="${ui.tab===t[0]?'on':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
+  const fn={danas:rToday,kalendar:rCal,klijenti:rClients,izvestaji:rReports,podesavanja:rSettings}[ui.tab]||rToday;
+  $('#app').innerHTML=fn()+`<footer>${APP} ${VER} · Gemb-Bit Željko Ilić<br><button class="coffee-mini" onclick="coffeeOpen()" type="button">☕ Doniraj autoru</button></footer>`;
+  $('#fab').innerHTML=ui.tab==='klijenti'?`<button class="btn-p" data-act="newclient" title="Novi klijent">＋</button>`:ui.tab==='izvestaji'||ui.tab==='podesavanja'?'':`<button class="btn-p" data-act="newsess" title="Novi termin">＋</button>`;
+  $('#gdst').textContent=gd.on?(gd.err?'☁️ ⚠':'☁️'):''}
+
+/* ---------- red termina ---------- */
+function sRow(s,opt){opt=opt||{};const c=C(s.cid),st=ST[s.status]||ST.zak,end=mtime(tmin(s.time)+(s.dur||60));
+  return`<div class="srow st-${s.status}" data-act="opensess" data-v="${s.id}">
+   <div class="tm"><b>${esc(s.time||'--:--')}</b><small>${end}</small></div>
+   ${avatar(c)}
+   <div class="grow"><div class="n">${esc(cname(s.cid))}${s.type&&s.type!=='Personalni'?` <span class="badge">${esc(s.type)}</span>`:''}</div>
+    <div class="xs muted">${opt.date?esc(dlabel(s.date))+' · ':''}<span style="color:${st[2]}">${st[1]} ${st[0]}</span>${s.remSent&&s.status==='zak'?' · 🔔 podsetnik poslat':''}${s.status==='odr'&&s.ex&&s.ex.length?' · '+s.ex.length+' vežbi':''}${s.price&&!s.paid&&s.status==='odr'?' · <span style="color:var(--warn)">neplaćeno</span>':''}</div></div>
+   ${opt.quick&&s.status==='zak'?`<div class="qa"><button class="btn-s" data-act="qdone" data-v="${s.id}" title="Održan">✅</button><button class="btn-s" data-act="qrem" data-v="${s.id}" title="Podsetnik">🔔</button></div>`:''}
+  </div>`}
+
+/* ---------- DANAS ---------- */
+function rToday(){const t=today(),tm=addDays(t,1),ts=daySess(t),tms=daySess(tm),h=new Date().getHours();
+  const tn=first(S().trainer),pz=h<10?'Dobro jutro':h<18?'Zdravo':'Dobro veče';
+  const ws=weekStart(t),wk=db.sessions.filter(s=>s.date>=ws&&s.date<=addDays(ws,6)),act=db.clients.filter(c=>!c.arch);
+  let o=`<div class="hello"><div><div class="b" style="font-size:1.15rem">${pz}${tn?', '+esc(tn):''}! 👋</div><div class="small muted">${esc(DAYSF[new Date().getDay()])}, ${new Date().getDate()}. ${MONF[new Date().getMonth()]}</div></div></div>`;
+  o+=instBanner();
+  if(!db.clients.length)o+=`<div class="card"><h3>👋 Dobro došao u ${APP}</h3><div class="small" style="line-height:1.6">1. Dodaj prvog klijenta (ime i broj telefona).<br>2. Zakaži mu termin — može i da se ponavlja svake nedelje.<br>3. Posle treninga označi ✅ i upiši šta je rađeno.<br>4. U Podešavanjima upiši svoje ime i poveži Google Drive.</div>
+   <div class="grid g2" style="margin-top:12px"><button class="btn-p" data-act="newclient">＋ Dodaj klijenta</button><button data-act="tab" data-v="podesavanja">⚙️ Podešavanja</button></div></div>`;
+  o+=`<div class="grid g3" style="margin-bottom:12px"><div class="stat"><small>Danas</small><b>${ts.filter(s=>s.status!=='otk').length}</b><small>termina</small></div><div class="stat"><small>Ova nedelja</small><b>${wk.filter(s=>s.status==='odr').length}/${wk.filter(s=>s.status!=='otk').length}</b><small>održano</small></div><div class="stat"><small>Aktivnih</small><b>${act.length}</b><small>klijenata</small></div></div>`;
+  o+=`<div class="card"><h3>📅 Danas <button class="btn-s" data-act="newsess" data-d="${t}">＋ Termin</button></h3>${ts.length?ts.map(s=>sRow(s,{quick:1})).join(''):'<div class="empty">Danas nema zakazanih termina.</div>'}</div>`;
+  const tz=tms.filter(s=>s.status==='zak'),un=tz.filter(s=>!s.remSent);
+  o+=`<div class="card"><h3>🌙 Sutra${tz.length?` <button class="btn-s ${un.length?'btn-p':''}" data-act="bulkrem" data-d="${tm}">🔔 Podsetnici (${un.length?un.length+' za slanje':'poslato'})</button>`:''}</h3>${tms.length?tms.map(s=>sRow(s)).join(''):'<div class="empty">Sutra nema termina.</div>'}</div>`;
+  /* upozorenja i ideje */
+  const al=[];
+  db.packages.forEach(p=>{const c=C(p.cid);if(!c||c.arch)return;const i=pkgInfo(p);if(p.archived)return;
+    if(i.left===1&&!i.exp)al.push(['📦',`${esc(c.name)} — u paketu „${esc(p.name||'paket')}“ ostao je još <b>1 termin</b>`,p.cid]);
+    else if(i.left===0&&!p.renewed&&dayDiff(t,p.start)<120)al.push(['📦',`${esc(c.name)} — paket „${esc(p.name||'paket')}“ je potrošen`,p.cid]);
+    else if(p.end&&!i.exp&&dayDiff(p.end,t)<=3&&i.left)al.push(['⏳',`${esc(c.name)} — paket ističe ${esc(dlabel(p.end).toLowerCase())}, ostalo ${i.left} termina`,p.cid]);
+    if(!p.paid&&p.price&&dayDiff(t,p.start)>=0)al.push(['💰',`${esc(c.name)} — paket nije plaćen (${money(p.price)})`,p.cid])});
+  const unp=db.sessions.filter(s=>s.status==='odr'&&s.price&&!s.paid);
+  if(unp.length)al.push(['💰',`Neplaćeni održani termini: <b>${unp.length}</b> (${money(unp.reduce((a,s)=>a+(+s.price||0),0))})`,'']);
+  act.forEach(c=>{const k=bdayIn(c.birth);if(k!=null&&k<=7)al.push(['🎂',`${esc(c.name)} — rođendan ${k===0?'<b>danas</b>':k===1?'sutra':'za '+k+' dana'}${age(c.birth)!=null?' ('+(age(c.birth)+(k===0?0:1))+'.)':''}`,c.id])});
+  act.forEach(c=>{if(nextSess(c.id))return;const l=lastDone(c.id);const since=l?dayDiff(t,l.date):(c.start?dayDiff(t,c.start):0);if(since>=(S().inactive||14))al.push(['💤',`${esc(c.name)} — ${l?'poslednji trening pre '+since+' dana':'još nije bio na treningu'}, nema zakazanih termina`,c.id,'inact'])});
+  if(al.length)o+=`<div class="card"><h3>🔔 Na šta treba obratiti pažnju</h3>${al.slice(0,15).map(a=>`<div class="al" ${a[2]?`data-act="openclient" data-v="${a[2]}"`:`data-act="tab" data-v="izvestaji"`}><span>${a[0]}</span><div class="grow small">${a[1]}</div>${a[3]==='inact'?`<button class="btn-s" data-act="inactmsg" data-v="${a[2]}">💬</button>`:''}</div>`).join('')}</div>`;
+  const nx=db.sessions.filter(s=>s.status==='zak'&&s.date>tm).sort(sortS).slice(0,6);
+  if(nx.length)o+=`<div class="card"><h3>➡️ Sledeći termini</h3>${nx.map(s=>sRow(s,{date:1})).join('')}</div>`;
+  return o}
+let instEv=null;
+const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+function instBanner(){if(isStandalone()||S().instHide||!instEv)return'';return`<div class="okb row sp"><span class="small">📲 Instaliraj aplikaciju na početni ekran</span><span class="row" style="gap:6px"><button class="btn-p btn-s" data-act="install">Instaliraj</button><button class="btn-s btn-g" data-act="insthide">✕</button></span></div>`}
+
+/* ---------- KALENDAR (nedelja) ---------- */
+function rCal(){const w=ui.week,e=addDays(w,6),t=today();const d0=new Date(w+'T12:00:00'),d1=new Date(e+'T12:00:00');
+  let o=`<div class="pnav"><button data-act="wk" data-v="-7">‹</button><div class="lbl" data-act="wk" data-v="0">${d0.getDate()}. ${MONS[d0.getMonth()]} – ${d1.getDate()}. ${MONS[d1.getMonth()]}${weekStart(t)===w?' · ova nedelja':''}</div><button data-act="wk" data-v="7">›</button></div>`;
+  const all=db.sessions.filter(s=>s.date>=w&&s.date<=e);
+  o+=`<div class="small muted" style="margin:-4px 2px 10px">Termina: <b>${all.filter(s=>s.status!=='otk').length}</b> · održano ${all.filter(s=>s.status==='odr').length} · otkazano ${all.filter(s=>s.status==='otk').length} · nije došao ${all.filter(s=>s.status==='ndo').length}</div>`;
+  for(let i=0;i<7;i++){const d=addDays(w,i),ss=daySess(d);
+    o+=`<div class="card dayc ${d===t?'today':''}"><h3><span>${esc(DAYSF[new Date(d+'T12:00:00').getDay()])} <span class="muted small">${new Date(d+'T12:00:00').getDate()}. ${MONS[new Date(d+'T12:00:00').getMonth()]}${d===t?' · danas':''}</span></span><button class="btn-s" data-act="newsess" data-d="${d}">＋</button></h3>${ss.length?ss.map(s=>sRow(s)).join(''):'<div class="xs muted" style="padding:2px 4px">—</div>'}</div>`}
+  return o}
+
+/* ---------- KLIJENTI ---------- */
+function rClients(){const q=norm(ui.cq);let list=db.clients.filter(c=>ui.cf==='arh'?c.arch:ui.cf==='akt'?!c.arch:true).filter(c=>!q||norm(c.name+' '+(c.phone||'')+' '+(c.goal||'')).includes(q)).sort((a,b)=>a.name.localeCompare(b.name,'sr'));
+  let o=`<div class="row" style="margin-bottom:10px"><input class="fld grow" id="cq" type="search" placeholder="🔍 Pretraži klijente…" value="${esc(ui.cq)}"></div>
+   <div class="seg" style="margin-bottom:12px">${[['akt','Aktivni ('+db.clients.filter(c=>!c.arch).length+')'],['svi','Svi'],['arh','Arhiva']].map(x=>`<button data-act="cf" data-v="${x[0]}" class="${ui.cf===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>`;
+  if(!list.length)o+=`<div class="empty">${db.clients.length?'Nema klijenata za ovaj prikaz.':'Još nema klijenata. Dodaj prvog dugmetom ＋ dole desno.'}</div>`;
+  o+=list.map(c=>{const n=nextSess(c.id),p=activePkg(c.id),pi=p&&pkgInfo(p),cnt=sessOf(c.id).filter(s=>s.status==='odr').length;
+    return`<div class="fi" data-act="openclient" data-v="${c.id}">${avatar(c,42)}<div class="grow"><div class="n">${esc(c.name)}</div><div class="xs muted">${n?'📅 '+esc(dlabel(n.date))+' u '+esc(n.time):'nema zakazanih termina'}${pi&&pi.left!=null?' · 📦 ostalo '+pi.left:''} · ${cnt} treninga</div></div><span class="muted">›</span></div>`}).join('');
+  return o}
+
+/* ---------- IZVEŠTAJI ---------- */
+function rReports(){const m=ui.rm,[y,mo]=m.split('-').map(Number),ss=db.sessions.filter(s=>s.date.slice(0,7)===m);
+  const odr=ss.filter(s=>s.status==='odr'),otk=ss.filter(s=>s.status==='otk'),ndo=ss.filter(s=>s.status==='ndo');
+  const incS=odr.filter(s=>s.paid).reduce((a,s)=>a+(+s.price||0),0),incP=db.packages.filter(p=>p.paid&&(p.paidDate||p.start).slice(0,7)===m).reduce((a,p)=>a+(+p.price||0),0);
+  const unpaid=odr.filter(s=>s.price&&!s.paid).reduce((a,s)=>a+(+s.price||0),0);
+  const nc=db.clients.filter(c=>(c.start||'').slice(0,7)===m).length,rate=odr.length+ndo.length?Math.round(odr.length/(odr.length+ndo.length)*100):null;
+  let o=`<div class="pnav"><button data-act="rm" data-v="-1">‹</button><div class="lbl">${MONF[mo-1]} ${y}</div><button data-act="rm" data-v="1">›</button></div>
+   <div class="grid g2" style="margin-bottom:12px"><div class="stat"><small>Održani treninzi</small><b>${odr.length}</b></div><div class="stat"><small>Prihod (plaćeno)</small><b>${money(incS+incP)}</b></div>
+   <div class="stat"><small>Otkazano / nije došao</small><b>${otk.length} / ${ndo.length}</b></div><div class="stat"><small>Dolaznost</small><b>${rate==null?'—':rate+'%'}</b></div>
+   <div class="stat"><small>Neplaćeno (termini)</small><b style="color:${unpaid?'var(--warn)':'inherit'}">${money(unpaid)}</b></div><div class="stat"><small>Novi klijenti</small><b>${nc}</b></div></div>`;
+  const dim=new Date(y,mo,0).getDate(),per=[];let mx=1;for(let d=1;d<=dim;d++){const k=m+'-'+pad(d),n=odr.filter(s=>s.date===k).length;per.push([d,n]);mx=Math.max(mx,n)}
+  o+=`<div class="card"><h3>📈 Održani treninzi po danima</h3><div class="chart">${per.map(([d,n])=>`<div class="col" title="${d}. ${MONS[mo-1]}: ${n}"><i style="height:${n?Math.max(4,n/mx*100):0}%"></i><small>${d%5===0||d===1?d:''}</small></div>`).join('')}</div></div>`;
+  const byC={};odr.forEach(s=>{const b=byC[s.cid]=byC[s.cid]||{n:0,inc:0,due:0};b.n++;if(s.paid)b.inc+=+s.price||0;else b.due+=+s.price||0});
+  const rows=Object.entries(byC).sort((a,b)=>b[1].n-a[1].n);
+  o+=`<div class="card"><h3>👥 Po klijentima</h3>${rows.length?`<table class="tbl"><tr><th>Klijent</th><th>Treninga</th><th>Plaćeno</th><th>Duguje</th></tr>${rows.map(([id,b])=>`<tr data-act="openclient" data-v="${id}"><td>${esc(cname(id))}</td><td>${b.n}</td><td>${b.inc?money(b.inc):'—'}</td><td>${b.due?`<span style="color:var(--warn)">${money(b.due)}</span>`:'—'}</td></tr>`).join('')}</table>`:'<div class="empty">Nema održanih treninga u ovom mesecu.</div>'}</div>`;
+  const types={};odr.forEach(s=>types[s.type||'Personalni']=(types[s.type||'Personalni']||0)+1);
+  if(Object.keys(types).length>1)o+=`<div class="card"><h3>🏷️ Po vrsti treninga</h3>${Object.entries(types).map(([k,v])=>`<div class="row sp small" style="padding:4px 0"><span>${esc(k)}</span><b>${v}</b></div>`).join('')}</div>`;
+  o+=`<div class="grid g2"><button data-act="csv">📑 Izvoz meseca (CSV / Excel)</button><button data-act="share-month">📤 Podeli izveštaj</button></div>`;
+  return o}
+
+
+/* ---------- PODEŠAVANJA ---------- */
+function rSettings(){const s=S();let o='';
+  o+=`<div class="card"><h3>👤 Trener</h3><div class="grid g2"><div><label class="l">Ime i prezime</label><input class="fld" data-set="trainer" value="${esc(s.trainer)}" placeholder="npr. Marko Petrović"></div>
+   <div><label class="l">Teretana / mesto</label><input class="fld" data-set="gym" value="${esc(s.gym)}" placeholder="npr. Fitnes centar X"></div></div>
+   <label class="l" style="margin-top:10px">Telefon (za poruke klijentima)</label><input class="fld" data-set="phone" inputmode="tel" value="${esc(s.phone)}" placeholder="06x xxx xxxx"></div>`;
+  o+=`<div class="card"><h3>⏱️ Termini i cene</h3><div class="grid g3"><div><label class="l">Trajanje (min)</label><input class="fld" type="number" inputmode="numeric" data-set="dur" value="${esc(s.dur)}"></div>
+   <div><label class="l">Cena treninga</label><input class="fld" inputmode="decimal" data-set="price" value="${esc(s.price)}" placeholder="npr. 1500"></div><div><label class="l">Valuta</label><input class="fld" data-set="cur" value="${esc(s.cur)}"></div></div>
+   <label class="l" style="margin-top:10px">Neaktivan klijent posle (dana bez treninga)</label><input class="fld" type="number" inputmode="numeric" data-set="inactive" value="${esc(s.inactive)}">
+   <label class="row" style="margin-top:12px;cursor:pointer" data-act="ndotog"><span style="font-size:1.3rem">${s.ndoUsed?'☑️':'⬜'}</span><span class="small">Nedolazak bez otkazivanja se računa kao iskorišćen termin iz paketa</span></label></div>`;
+  o+=`<div class="card"><h3>💬 Tekst poruka</h3><div class="xs muted" style="margin-bottom:8px">Zamene: {ime} {datum} {vreme} {mesto} {trener} {trajanje}; u rezimeu i {trening}.</div>
+   <label class="l">Podsetnik za trening</label><textarea class="fld" rows="3" data-set="remTpl">${esc(s.remTpl)}</textarea>
+   <label class="l" style="margin-top:10px">Rezime treninga</label><textarea class="fld" rows="3" data-set="sumTpl">${esc(s.sumTpl)}</textarea>
+   <label class="l" style="margin-top:10px">Poruka neaktivnom klijentu</label><textarea class="fld" rows="2" data-set="notTpl">${esc(s.notTpl)}</textarea>
+   <button class="btn-s" style="margin-top:8px" data-act="tplreset">↺ Vrati podrazumevane tekstove</button></div>`;
+  o+=`<div class="card"><h3>🏋️ Vežbe i šabloni treninga</h3><div class="small muted" style="margin-bottom:10px">${Object.values(EXLIB).flat().length} ugrađenih vežbi${db.exercises.length?' + '+db.exercises.length+' tvojih':''} · šablona: ${db.templates.length}</div><div class="grid g2"><button data-act="exmgr">🏋️ Moje vežbe</button><button data-act="tplmgr">📋 Šabloni treninga</button></div></div>`;
+  o+=gdCard();
+  o+=`<div class="card"><h3>💾 Rezervna kopija</h3><div class="grid g2"><button data-act="export">⬇️ Napravi rezervnu kopiju</button><button data-act="import">⬆️ Vrati rezervnu kopiju</button></div>
+   <details style="margin-top:8px"><summary>Napredno</summary><div class="grid g2" style="margin-top:6px"><button data-act="csvall">📑 Svi termini (CSV / Excel)</button><button class="btn-d" data-act="wipe">🗑️ Obriši sve podatke</button></div></details></div>`;
+  o+=`<div class="card"><h3>🎨 Izgled</h3><div class="seg">${[['dark','Tamna'],['light','Svetla'],['auto','Automatski']].map(x=>`<button data-act="theme" data-v="${x[0]}" class="${s.theme===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>
+   <div class="sw" style="margin-top:12px">${ACCENTS.map(a=>`<button data-act="accent" data-v="${a}" class="${s.accent===a?'on':''}" style="background:${a}"></button>`).join('')}</div></div>`;
+  o+=`<div class="card"><h3>📲 Instalacija</h3>${instEv?`<button class="btn-p" data-act="install" style="width:100%">Instaliraj aplikaciju</button>`:isStandalone()?'<div class="small muted">Aplikacija je instalirana ✔</div>':`<div class="small muted">Android (Chrome): meni ⋮ → <i>Instaliraj aplikaciju</i>. iPhone (Safari): Deli → <i>Dodaj na početni ekran</i>.</div>`}</div>`;
+  o+=`<div class="card"><h3>☕ Podrži autora</h3><div class="small muted" style="margin-bottom:10px">${APP} je besplatna. Ako ti se aplikacija sviđa, možeš da častiš autora kafom.</div><button class="btn-p" style="width:100%" onclick="coffeeOpen()" type="button">☕ Plati mi kafu</button></div>`;
+  o+=`<div class="card"><h3>📱 Još Atmos aplikacija</h3><div class="small muted" style="margin-bottom:10px">Atmos Ishrana (kalorije — odlično za klijente), Atmos Dom, Atmos Auto — servisna knjižica, Atmos Dashboard i ostale besplatne aplikacije.</div><button class="btn-p" style="width:100%" data-act="apps">🌐 Otvori Atmos aplikacije</button></div>`;
+  o+=`<div class="card"><h3>ℹ️ O aplikaciji</h3><div class="row sp" style="margin-bottom:8px"><span>Verzija <b>${VER}</b></span><button class="btn-s" data-act="updchk">🔄 Proveri ažuriranje</button></div>
+   <div class="small muted" style="line-height:1.6">Podaci o klijentima čuvaju se na ovom uređaju i (ako ga povežeš) na tvom Google Drive-u — nigde drugde.<br><a href="privatnost.html" target="_blank" rel="noopener">Politika privatnosti</a> · <a href="uslovi.html" target="_blank" rel="noopener">Uslovi korišćenja</a><br>Podrška: <a href="mailto:vasserviserbgd@gmail.com">vasserviserbgd@gmail.com</a><br>Autor: Željko Ilić · Gemb-Bit, Beograd</div></div>`;
+  return o}
+
+/* ---------- DIJALOG: KLIJENT ---------- */
+let cv={id:null,tab:'pregled',metric:'kg',mon:null};
+function openClient(id,tab){cv={id,tab:tab||'pregled',metric:'kg',mon:today().slice(0,7)};const d=$('#dlg');d.innerHTML=cHtml();openD(d)}
+function cRedraw(){const d=$('#dlg');if(d.open&&cv.id){const st=d.querySelector('.db')?d.querySelector('.db').scrollTop:0;d.innerHTML=cHtml();const b=d.querySelector('.db');if(b)b.scrollTop=st}}
+function cHtml(){const c=C(cv.id);if(!c)return`<div class="dh"><button class="btn-s" data-act="close">✕</button><h2>Klijent</h2></div><div class="db"><div class="empty">Klijent nije pronađen.</div></div>`;
+  const tabs=[['pregled','Pregled'],['treninzi','Treninzi'],['napredak','Napredak'],['paketi','Paketi'],['beleske','Beleške']];
+  return`<div class="dh"><button class="btn-s" data-act="close">✕</button>${avatar(c,34)}<h2>${esc(c.name)}${c.arch?' <span class="badge">arhiva</span>':''}</h2><button class="btn-s" data-act="editclient" data-v="${c.id}">✏️</button></div>
+   <div class="tabs">${tabs.map(t=>`<button data-act="ctab" data-v="${t[0]}" class="${cv.tab===t[0]?'on':''}">${t[1]}</button>`).join('')}</div>
+   <div class="db">${({pregled:cOverview,treninzi:cSessions,napredak:cProgress,paketi:cPackages,beleske:cNotes}[cv.tab])(c)}</div>`}
+function cOverview(c){const ss=sessOf(c.id),odr=ss.filter(s=>s.status==='odr'),ndo=ss.filter(s=>s.status==='ndo'),n=nextSess(c.id),p=activePkg(c.id),pi=p&&pkgInfo(p);
+  const m30=odr.filter(s=>dayDiff(today(),s.date)<30&&s.date<=today()).length,rate=odr.length+ndo.length?Math.round(odr.length/(odr.length+ndo.length)*100):null;
+  const kg=measOf(c.id).filter(m=>m.kg!=null),k0=kg[0],k1=kg[kg.length-1];
+  let o=`<div class="card"><div class="cact">${c.phone?`<a class="btn" href="tel:${esc(phoneIntl(c.phone))}">📞<span>Pozovi</span></a>`:''}<button data-act="cmsg" data-ch="sms">💬<span>SMS</span></button><button data-act="cmsg" data-ch="viber">🟣<span>Viber</span></button><button data-act="cmsg" data-ch="wa">🟢<span>WhatsApp</span></button></div>
+   <div class="small muted" style="margin-top:10px;line-height:1.7">${c.phone?'📱 '+esc(c.phone)+'<br>':''}${c.email?'✉️ '+esc(c.email)+'<br>':''}${age(c.birth)!=null?'🎂 '+age(c.birth)+' god.'+(c.sex?' · '+(c.sex==='m'?'muško':'žensko'):'')+'<br>':''}${c.height?'📏 '+esc(c.height)+' cm<br>':''}${c.goal?'🎯 '+esc(c.goal)+'<br>':''}${c.start?'🗓️ Klijent od '+esc(dshort(c.start)):''}</div>
+   ${c.health?`<div class="warnb" style="margin:10px 0 0">⚕️ ${esc(c.health)}</div>`:''}</div>`;
+  o+=`<div class="grid g3" style="margin-bottom:12px"><div class="stat"><small>Treninga</small><b>${odr.length}</b></div><div class="stat"><small>Zadnjih 30 dana</small><b>${m30}</b></div><div class="stat"><small>Dolaznost</small><b>${rate==null?'—':rate+'%'}</b></div>
+   <div class="stat"><small>Težina</small><b>${k1?r1(k1.kg)+' kg':'—'}</b></div><div class="stat"><small>Promena</small><b>${k0&&k1&&k0!==k1?(k1.kg-k0.kg>0?'+':'')+r1(k1.kg-k0.kg)+' kg':'—'}</b></div><div class="stat"><small>BMI</small><b>${k1&&c.height?r1(k1.kg/Math.pow(c.height/100,2)):'—'}</b></div></div>`;
+  o+=`<div class="card"><h3>📅 Sledeći termin <button class="btn-s" data-act="newsess" data-c="${c.id}">＋ Zakaži</button></h3>${n?sRow(n,{date:1}):'<div class="small muted">Nema zakazanih termina.</div>'}</div>`;
+  o+=`<div class="card"><h3>📦 Paket</h3>${p?pkgRow(p):`<div class="small muted">Nema aktivnog paketa.</div><button class="btn-s" style="margin-top:8px" data-act="newpkg">＋ Novi paket</button>`}</div>`;
+  const l=lastDone(c.id);if(l)o+=`<div class="card"><h3>🏋️ Poslednji trening · ${esc(dlabel(l.date))}</h3><div class="small" style="white-space:pre-wrap;line-height:1.5">${esc(workoutText(l))}</div></div>`;
+  o+=`<button style="width:100%" data-act="shareprog">📤 Pošalji klijentu pregled napretka</button>`;
+  return o}
+function cSessions(c){const ss=sessOf(c.id).sort(sortS).reverse(),[y,m]=cv.mon.split('-').map(Number),dim=new Date(y,m,0).getDate(),off=(new Date(y,m-1,1).getDay()+6)%7;
+  const mm=ss.filter(s=>s.date.slice(0,7)===cv.mon);
+  let o=`<div class="card"><div class="pnav" style="margin-bottom:8px"><button data-act="cmon" data-v="-1">‹</button><div class="lbl">${MONF[m-1]} ${y}</div><button data-act="cmon" data-v="1">›</button></div>
+   <div class="mcal">${['P','U','S','Č','P','S','N'].map(x=>`<b>${x}</b>`).join('')}${'<span></span>'.repeat(off)}${Array.from({length:dim},(_,i)=>{const d=cv.mon+'-'+pad(i+1),s=mm.find(x=>x.date===d&&x.status==='odr')||mm.find(x=>x.date===d);return`<span class="${s?'d-'+s.status:''} ${d===today()?'td':''}" ${s?`data-act="opensess" data-v="${s.id}"`:''}>${i+1}</span>`}).join('')}</div>
+   <div class="xs muted" style="margin-top:8px">✅ održano ${mm.filter(s=>s.status==='odr').length} · ❌ nije došao ${mm.filter(s=>s.status==='ndo').length} · 🚫 otkazano ${mm.filter(s=>s.status==='otk').length} · 📅 zakazano ${mm.filter(s=>s.status==='zak').length}</div></div>`;
+  o+=`<button class="btn-p" style="width:100%;margin-bottom:12px" data-act="newsess" data-c="${c.id}">＋ Novi termin</button>`;
+  const card=s=>`<div class="card" style="padding:10px 12px" data-act="opensess" data-v="${s.id}"><div class="row sp"><b class="small">${esc(dshort(s.date))} · ${esc(s.time)}</b><span class="xs" style="color:${ST[s.status][2]}">${ST[s.status][1]} ${ST[s.status][0]}</span></div>${s.status==='odr'&&((s.ex&&s.ex.length)||s.notes)?`<div class="xs muted" style="white-space:pre-wrap;margin-top:4px">${esc(workoutText(s))}</div>`:''}</div>`;
+  const up=ss.filter(s=>s.status==='zak'&&s.date>=today()).reverse(),hist=ss.filter(s=>!(s.status==='zak'&&s.date>=today()));
+  if(!ss.length)o+='<div class="empty">Još nema termina.</div>';
+  if(up.length)o+=`<div class="sec">📅 Zakazano (${up.length})</div>`+up.slice(0,10).map(card).join('')+(up.length>10?`<div class="xs muted" style="margin:-4px 2px 10px">… i još ${up.length-10}</div>`:'');
+  if(hist.length)o+=`<div class="sec">🕘 Istorija (${hist.length})</div>`+hist.map(card).join('');
+  return o}
+function lineChart(pts,unit){if(pts.length<2)return'<div class="xs muted" style="padding:6px 0">Za grafikon su potrebna bar dva merenja.</div>';
+  const W=320,H=140,P=24,xs=pts.map(p=>new Date(p.d+'T12:00:00').getTime()),vs=pts.map(p=>p.v),x0=Math.min(...xs),x1=Math.max(...xs),v0=Math.min(...vs),v1=Math.max(...vs),rv=(v1-v0)||1;
+  const X=t=>P+(x1===x0?0:(t-x0)/(x1-x0))*(W-2*P),Y=v=>H-P-((v-v0)/rv)*(H-2*P);
+  const path=pts.map((p,i)=>(i?'L':'M')+X(xs[i]).toFixed(1)+' '+Y(p.v).toFixed(1)).join(' ');
+  return`<svg viewBox="0 0 ${W} ${H}" class="lc"><line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}" stroke="var(--line)"/><path d="${path}" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linejoin="round"/>${pts.map((p,i)=>`<circle cx="${X(xs[i]).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3.5" fill="var(--acc)"><title>${dshort(p.d)}: ${fmtN(p.v)} ${unit}</title></circle>`).join('')}
+   <text x="${P}" y="14" font-size="10" fill="var(--muted)">${fmtN(v1)} ${unit}</text><text x="${P}" y="${H-6}" font-size="10" fill="var(--muted)">${fmtN(v0)} ${unit}</text><text x="${W-P}" y="${H-6}" font-size="10" fill="var(--muted)" text-anchor="end">${dshort(pts[pts.length-1].d)}</text></svg>`}
+function cProgress(c){const ms=measOf(c.id),mk=MEAS.find(x=>x[0]===cv.metric)||MEAS[0];
+  const pts=ms.filter(m=>m[mk[0]]!=null).map(m=>({d:m.date,v:m[mk[0]]}));
+  let o=`<button class="btn-p" style="width:100%;margin-bottom:12px" data-act="newmeas">📏 Novo merenje</button>`;
+  o+=`<div class="card"><h3>📈 ${mk[1]}</h3><div class="chips" style="margin-bottom:8px">${MEAS.filter(x=>ms.some(m=>m[x[0]]!=null)||x[0]==='kg').map(x=>`<button data-act="metric" data-v="${x[0]}" class="${cv.metric===x[0]?'btn-p':''}">${x[1]}</button>`).join('')}</div>${lineChart(pts,mk[2])}
+   ${pts.length>=2?`<div class="small" style="margin-top:6px">Od ${esc(dshort(pts[0].d))}: <b>${(pts[pts.length-1].v-pts[0].v>0?'+':'')+r1(pts[pts.length-1].v-pts[0].v)} ${mk[2]}</b></div>`:''}</div>`;
+  if(ms.length){const f=ms[0],l=ms[ms.length-1];
+    o+=`<div class="card"><h3>📏 Mere — prvo i poslednje merenje</h3><table class="tbl"><tr><th></th><th>${esc(dshort(f.date))}</th><th>${esc(dshort(l.date))}</th><th>Razlika</th></tr>${MEAS.filter(x=>f[x[0]]!=null||l[x[0]]!=null).map(x=>`<tr><td>${x[1]}</td><td>${f[x[0]]!=null?fmtN(f[x[0]]):'—'}</td><td>${l[x[0]]!=null?fmtN(l[x[0]]):'—'}</td><td>${f[x[0]]!=null&&l[x[0]]!=null&&ms.length>1?`<b>${(l[x[0]]-f[x[0]]>0?'+':'')+r1(l[x[0]]-f[x[0]])}</b> ${x[2]}`:''}</td></tr>`).join('')}</table></div>`;
+    o+=`<div class="card"><h3>🗓️ Sva merenja (${ms.length})</h3>${[...ms].reverse().map(m=>`<div class="srow" data-act="editmeas" data-v="${m.id}"><div class="grow"><div class="n small">${esc(dshort(m.date))}</div><div class="xs muted">${MEAS.filter(x=>m[x[0]]!=null).map(x=>x[1]+' '+fmtN(m[x[0]])+' '+x[2]).join(' · ')}${m.note?' · '+esc(m.note):''}</div></div><span class="muted">›</span></div>`).join('')}</div>`}
+  const pr={};sessOf(c.id).filter(s=>s.status==='odr').forEach(s=>(s.ex||[]).forEach(e=>(e.sets||[]).forEach(x=>{const k=num(x.kg);if(k&&(!pr[e.name]||k>pr[e.name].kg))pr[e.name]={kg:k,r:x.r,d:s.date}})));
+  const pk=Object.entries(pr).sort((a,b)=>b[1].kg-a[1].kg);
+  if(pk.length)o+=`<div class="card"><h3>🏆 Lični rekordi (najveća kilaža)</h3>${pk.slice(0,20).map(([n,v])=>`<div class="row sp small" style="padding:5px 0;border-bottom:1px solid var(--line)"><span>${esc(n)}</span><span><b>${fmtN(v.kg)} kg</b>${v.r?' × '+esc(v.r):''} <span class="muted xs">${esc(dshort(v.d))}</span></span></div>`).join('')}</div>`;
+  return o}
+function pkgRow(p){const i=pkgInfo(p);return`<div class="srow" data-act="editpkg" data-v="${p.id}"><div class="grow"><div class="n">${esc(p.name||'Paket')}${i.exp?' <span class="badge">istekao</span>':i.left===0?' <span class="badge">potrošen</span>':''}</div>
+   <div class="xs muted">${p.count?'Iskorišćeno '+i.u+'/'+p.count+' · ostalo <b style="color:var(--txt)">'+i.left+'</b>':'Neograničeno · iskorišćeno '+i.u}${p.end?' · važi do '+esc(dshort(p.end)):''}${p.price?' · '+money(p.price)+(p.paid?' ✔ plaćeno':' · <span style="color:var(--warn)">nije plaćeno</span>'):''}</div>
+   ${p.count?`<div class="bar"><i style="width:${Math.min(100,i.u/p.count*100)}%;background:${i.left<=1?'var(--warn)':'var(--acc)'}"></i></div>`:''}</div><span class="muted">›</span></div>`}
+function cPackages(c){const ps=db.packages.filter(p=>p.cid===c.id).sort((a,b)=>b.start.localeCompare(a.start));
+  const unp=sessOf(c.id).filter(s=>s.status==='odr'&&s.price&&!s.paid);
+  let o=`<button class="btn-p" style="width:100%;margin-bottom:12px" data-act="newpkg">📦 Novi paket / članarina</button>`;
+  o+=`<div class="card"><h3>📦 Paketi</h3>${ps.length?ps.map(pkgRow).join(''):'<div class="small muted">Nema paketa. Paket je npr. „12 treninga mesečno“ — aplikacija sama broji iskorišćene termine.</div>'}</div>`;
+  o+=`<div class="card"><h3>💰 Neplaćeni pojedinačni treninzi</h3>${unp.length?unp.sort(sortS).map(s=>`<div class="row sp small" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${esc(dshort(s.date))} · ${esc(s.time)}</span><span><b>${money(s.price)}</b> <button class="btn-s" data-act="paysess" data-v="${s.id}">✔ Plaćeno</button></span></div>`).join('')+`<div class="row sp" style="margin-top:8px"><b>Ukupno</b><b style="color:var(--warn)">${money(unp.reduce((a,s)=>a+(+s.price||0),0))}</b></div><button style="width:100%;margin-top:8px" data-act="payall">✔ Označi sve kao plaćeno</button>`:'<div class="small muted">Sve je plaćeno ✔</div>'}</div>`;
+  return o}
+function cNotes(c){return`<div class="card"><label class="l">🎯 Cilj</label><input class="fld" data-cn="goal" value="${esc(c.goal||'')}" placeholder="npr. -8 kg do leta, snaga, rehabilitacija kolena">
+   <label class="l" style="margin-top:10px">⚕️ Zdravlje, povrede, ograničenja</label><textarea class="fld" rows="3" data-cn="health" placeholder="npr. operisano koleno 2023, visok pritisak">${esc(c.health||'')}</textarea>
+   <label class="l" style="margin-top:10px">🍽️ Ishrana</label><textarea class="fld" rows="3" data-cn="diet" placeholder="npr. 2000 kcal, 140 g proteina, bez laktoze">${esc(c.diet||'')}</textarea>
+   <label class="l" style="margin-top:10px">📝 Beleške</label><textarea class="fld" rows="5" data-cn="notes">${esc(c.notes||'')}</textarea>
+   <div class="xs muted" style="margin-top:6px">Čuva se automatski.</div></div>`}
+
+/* ---------- DIJALOG: IZMENA KLIJENTA ---------- */
+function editClient(id){const c=id?C(id):{name:'',phone:'',email:'',birth:'',sex:'',height:'',goal:'',start:today(),color:CCOL[db.clients.length%CCOL.length]};
+  const d=$('#dlg2');d.innerHTML=`<div class="dh"><button class="btn-s" data-act="close2">✕</button><h2>${id?'Izmeni klijenta':'Novi klijent'}</h2></div><div class="db">
+   <label class="l">Ime i prezime *</label><input class="fld" id="kn" value="${esc(c.name)}" autocomplete="off">
+   <div class="grid g2" style="margin-top:10px"><div><label class="l">Telefon</label><input class="fld" id="kp" inputmode="tel" value="${esc(c.phone||'')}" placeholder="06x xxx xxxx"></div><div><label class="l">E-pošta</label><input class="fld" id="ke" type="email" value="${esc(c.email||'')}"></div>
+   <div><label class="l">Datum rođenja</label><input class="fld" id="kb" type="date" value="${esc(c.birth||'')}"></div><div><label class="l">Pol</label><select class="fld" id="ks"><option value="">—</option><option value="m" ${c.sex==='m'?'selected':''}>Muški</option><option value="f" ${c.sex==='f'?'selected':''}>Ženski</option></select></div>
+   <div><label class="l">Visina (cm)</label><input class="fld" id="kh" inputmode="decimal" value="${esc(c.height||'')}"></div><div><label class="l">Klijent od</label><input class="fld" id="kd" type="date" value="${esc(c.start||'')}"></div></div>
+   ${id?'':`<label class="l" style="margin-top:10px">Početna težina (kg)</label><input class="fld" id="kw" inputmode="decimal" placeholder="nije obavezno">`}
+   <label class="l" style="margin-top:10px">Cilj</label><input class="fld" id="kg" value="${esc(c.goal||'')}" placeholder="npr. mršavljenje, snaga, kondicija">
+   <label class="l" style="margin-top:10px">Boja</label><div class="sw" id="kcol">${CCOL.map(x=>`<button type="button" data-col="${x}" class="${c.color===x?'on':''}" style="background:${x}"></button>`).join('')}</div>
+   <button class="btn-p" style="width:100%;margin-top:16px;padding:14px" data-act="saveclient" data-v="${id||''}">💾 Sačuvaj</button>
+   ${id?`<div class="grid g2" style="margin-top:10px"><button data-act="archclient" data-v="${id}">${c.arch?'♻️ Vrati iz arhive':'📁 Arhiviraj'}</button><button class="btn-d" data-act="delclient" data-v="${id}">🗑️ Obriši</button></div>`:''}</div>`;
+  d.querySelectorAll('#kcol button').forEach(b=>b.onclick=()=>{d.querySelectorAll('#kcol button').forEach(x=>x.classList.toggle('on',x===b))});
+  openD(d);if(!id)setTimeout(()=>$('#kn').focus(),100)}
+function saveClient(id){const n=$('#kn').value.trim();if(!n){toast('Upiši ime klijenta');return}
+  const col=($('#kcol .on')||{}).dataset;const v={name:n,phone:$('#kp').value.trim(),email:$('#ke').value.trim(),birth:$('#kb').value,sex:$('#ks').value,height:num($('#kh').value),start:$('#kd').value,goal:$('#kg').value.trim(),color:col?col.col:CCOL[0]};
+  let c;if(id){c=C(id);Object.assign(c,v)}else{c=Object.assign({id:uid(),created:Date.now()},v);db.clients.push(c);const w=num(($('#kw')||{}).value);if(w)db.measures.push({id:uid(),cid:c.id,date:c.start||today(),kg:w})}
+  save();$('#dlg2').close();if($('#dlg').open&&cv.id===c.id)cRedraw();else{render();openClient(c.id)}toast(id?'Sačuvano ✔':'Klijent dodat ✔')}
+
+/* ---------- DIJALOG: TERMIN ---------- */
+let sv=null;
+function openSess(id,o){o=o||{};let s;
+  if(id)s=JSON.parse(JSON.stringify(db.sessions.find(x=>x.id===id)));
+  else{const cid=o.cid||(db.clients.length===1?db.clients[0].id:'');const pk=cid&&activePkg(cid);const t=o.date||today();
+    const n=new Date(),nm=Math.ceil((n.getHours()*60+n.getMinutes()+30)/30)*30;
+    s={id:'',cid,date:t,time:t===today()?mtime(Math.min(nm,22*60)):'18:00',dur:num(S().dur)||60,type:'Personalni',status:'zak',price:pk?0:(num(S().price)||0),paid:false,pkg:pk?pk.id:'',notes:'',ex:[]}}
+  sv={s,isNew:!id,rep:0};const d=$('#dlg2');d.innerHTML=sHtml();openD(d)}
+function sHtml(){const s=sv.s,c=C(s.cid),pk=s.cid?db.packages.filter(p=>p.cid===s.cid&&(pkgInfo(p).active||p.id===s.pkg)):[];
+  const conf=db.sessions.filter(x=>x.id!==s.id&&x.date===s.date&&x.status!=='otk'&&tmin(x.time)<tmin(s.time)+(+s.dur||60)&&tmin(s.time)<tmin(x.time)+(x.dur||60));
+  return`<div class="dh"><button class="btn-s" data-act="close2">✕</button><h2>${sv.isNew?'Novi termin':'Termin'}</h2>${sv.isNew?'':`<button class="btn-s btn-d" data-act="delsess">🗑️</button>`}</div><div class="db">
+   <label class="l">Klijent *</label><div class="row"><select class="fld grow" id="sc"><option value="">— izaberi —</option>${db.clients.filter(x=>!x.arch||x.id===s.cid).sort((a,b)=>a.name.localeCompare(b.name,'sr')).map(x=>`<option value="${x.id}" ${x.id===s.cid?'selected':''}>${esc(x.name)}</option>`).join('')}</select><button class="btn-s" data-act="sc-new" title="Novi klijent">＋</button></div>
+   <div class="grid g3" style="margin-top:10px"><div><label class="l">Datum</label><input class="fld" id="sd" type="date" value="${esc(s.date)}"></div><div><label class="l">Vreme</label><input class="fld" id="st" type="time" value="${esc(s.time)}"></div><div><label class="l">Trajanje</label><input class="fld" id="sdu" type="number" inputmode="numeric" value="${esc(s.dur)}"></div></div>
+   ${conf.length?`<div class="warnb" style="margin:8px 0 0">⚠️ U isto vreme: ${conf.map(x=>esc(cname(x.cid))+' ('+esc(x.time)+')').join(', ')}</div>`:''}
+   <label class="l" style="margin-top:10px">Status</label><div class="seg">${Object.entries(ST).map(([k,v])=>`<button data-act="sst" data-v="${k}" class="${s.status===k?'on':''}">${v[1]} ${v[0]}</button>`).join('')}</div>
+   <div class="grid g2" style="margin-top:10px"><div><label class="l">Vrsta</label><select class="fld" id="sty">${TYPES.map(t=>`<option ${t===s.type?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div><label class="l">Plaćanje</label><select class="fld" id="spk"><option value="">Pojedinačno</option>${pk.map(p=>`<option value="${p.id}" ${p.id===s.pkg?'selected':''}>📦 ${esc(p.name||'Paket')}${pkgInfo(p).left!=null?' (ostalo '+pkgInfo(p).left+')':''}</option>`).join('')}</select></div></div>
+   <div id="spay" class="grid g2" style="margin-top:10px" ${s.pkg?'hidden':''}><div><label class="l">Cena (${esc(S().cur)})</label><input class="fld" id="spr" inputmode="decimal" value="${s.price?esc(s.price):''}"></div><div><label class="l">&nbsp;</label><button style="width:100%" data-act="spaid" class="${s.paid?'btn-p':''}">${s.paid?'✔ Plaćeno':'Nije plaćeno'}</button></div></div>
+   ${sv.isNew?`<label class="l" style="margin-top:10px">Ponavljanje</label><select class="fld" id="srep"><option value="0">Ne ponavlja se</option>${[4,8,12,24].map(n=>`<option value="${n}" ${sv.rep==n?'selected':''}>Svake nedelje — ${n} termina</option>`).join('')}</select>`:''}
+   <div class="card" style="margin-top:14px"><h3>🏋️ Šta je rađeno <span class="row" style="gap:6px"><button class="btn-s" data-act="exlast" title="Kao prošli put">↺ Prošli</button><button class="btn-s" data-act="extpl">📋 Šablon</button></span></h3>
+    <div id="exl">${exList()}</div><button style="width:100%;margin-top:8px" data-act="exadd">＋ Dodaj vežbu</button></div>
+   <label class="l">Beleška o treningu</label><textarea class="fld" id="sn" rows="2" placeholder="npr. osećao bol u ramenu, sledeći put više kardia">${esc(s.notes||'')}</textarea>
+   <div class="grid g2" style="margin-top:10px"><div><label class="l">Ocena napora (RPE 1–10)</label><input class="fld" id="srpe" type="number" min="1" max="10" inputmode="numeric" value="${esc(s.rpe||'')}"></div><div><label class="l">Raspoloženje / energija</label><select class="fld" id="smood"><option value="">—</option>${['😫 Loše','😐 Osrednje','🙂 Dobro','💪 Odlično'].map(m=>`<option ${m===s.mood?'selected':''}>${m}</option>`).join('')}</select></div></div>
+   <button class="btn-p" style="width:100%;margin-top:16px;padding:14px" data-act="savesess">💾 Sačuvaj termin</button>
+   ${c?`<div class="card" style="margin-top:14px"><h3>🔔 Podsetnik klijentu${s.remSent?' <span class="badge" style="color:var(--ok)">poslat '+esc(dlabel(ds(new Date(s.remSent))).toLowerCase())+'</span>':''}</h3>${msgBtns('srem')}
+    <h3 style="margin-top:14px">📤 Rezime treninga klijentu</h3>${msgBtns('ssum')}
+    <button style="width:100%;margin-top:10px" data-act="sics">📆 Dodaj u kalendar telefona</button></div>`:''}
+   </div>`}
+function exList(){const ex=sv.s.ex||[];if(!ex.length)return'<div class="xs muted">Dodaj vežbe, primeni šablon ili ponovi prošli trening.</div>';
+  return ex.map((e,i)=>`<div class="exb"><div class="row sp"><b class="small">${i+1}. ${esc(e.name)}</b><span class="row" style="gap:4px"><button class="btn-s btn-g" data-act="exup" data-i="${i}" ${i?'':'disabled'}>↑</button><button class="btn-s btn-g" data-act="exdel" data-i="${i}">✕</button></span></div>
+   <div class="sets">${(e.sets||[]).map((x,j)=>`<div class="set"><span class="xs muted">${j+1}.</span><input class="fld" data-ex="${i}" data-set="${j}" data-k="r" inputmode="numeric" placeholder="pon." value="${esc(x.r||'')}"><span class="xs muted">×</span><input class="fld" data-ex="${i}" data-set="${j}" data-k="kg" inputmode="decimal" placeholder="kg" value="${esc(fmtN(x.kg))}"><button class="btn-s btn-g" data-act="setdel" data-i="${i}" data-j="${j}">−</button></div>`).join('')}</div>
+   <div class="row" style="gap:6px;margin-top:4px"><button class="btn-s" data-act="setadd" data-i="${i}">＋ Serija</button><input class="fld grow" data-ex="${i}" data-k="note" placeholder="napomena (tempo, odmor, vreme…)" value="${esc(e.note||'')}" style="padding:6px 10px;font-size:.85rem"></div></div>`).join('')}
+function sRead(){const s=sv.s;if(!$('#sc'))return s;s.cid=$('#sc').value;s.date=$('#sd').value||s.date;s.time=$('#st').value||s.time;s.dur=num($('#sdu').value)||60;s.type=$('#sty').value;s.pkg=$('#spk').value;
+  s.price=s.pkg?0:(num(($('#spr')||{}).value)||0);s.notes=$('#sn').value.trim();s.rpe=num($('#srpe').value);s.mood=$('#smood').value;if($('#srep'))sv.rep=+$('#srep').value;return s}
+function sRedraw(noRead){if(!noRead)sRead();const d=$('#dlg2'),b=d.querySelector('.db'),st=b?b.scrollTop:0;d.innerHTML=sHtml();const nb=d.querySelector('.db');if(nb)nb.scrollTop=st}
+function saveSess(){const s=sRead();if(!s.cid){toast('Izaberi klijenta');return false}if(!s.date||!s.time){toast('Upiši datum i vreme');return false}
+  s.ex=(s.ex||[]).map(e=>Object.assign({},e,{sets:(e.sets||[]).filter(x=>x.r||x.kg)})).filter(e=>e.name);
+  if(s.status==='odr'&&!s.doneAt)s.doneAt=Date.now();
+  if(sv.isNew){s.id=uid();s.created=Date.now();db.sessions.push(s);
+    if(sv.rep>1){const ser=uid();s.ser=ser;const pk=s.pkg&&db.packages.find(p=>p.id===s.pkg);for(let k=1;k<sv.rep;k++){const n=Object.assign(JSON.parse(JSON.stringify(s)),{id:uid(),date:addDays(s.date,7*k),status:'zak',ex:[],notes:'',paid:false,remSent:null,doneAt:null,rpe:null,mood:''});
+      if(pk&&pk.end&&n.date>pk.end){n.pkg='';n.price=num(S().price)||0}db.sessions.push(n)}}
+    sv.isNew=false}
+  else{const i=db.sessions.findIndex(x=>x.id===s.id);if(i>=0)db.sessions[i]=s;else db.sessions.push(s)}
+  if(s.status==='odr'&&s.pkg){const p=db.packages.find(x=>x.id===s.pkg),i=p&&pkgInfo(p);if(i&&i.left===1)setTimeout(()=>toast('📦 '+first(cname(s.cid))+' ima još 1 termin u paketu'),2900);else if(i&&i.left===0)setTimeout(()=>toast('📦 Paket je potrošen — vreme za novi'),2900)}
+  save();return true}
+function closeSessUpd(){$('#dlg2').close();if($('#dlg').open)cRedraw();render()}
+function sessVars(){const s=sRead();return[C(s.cid),s]}
+
+/* .ics za kalendar telefona */
+function ics(s){const c=C(s.cid),d=s.date.replace(/-/g,''),t=s.time.replace(':','')+'00',e=mtime(tmin(s.time)+(s.dur||60)).replace(':','')+'00';
+  const txt=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Atmos//Personalni trener//SR','BEGIN:VEVENT','UID:'+(s.id||uid())+'@atmos-trener','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z','DTSTART:'+d+'T'+t,'DTEND:'+d+'T'+e,'SUMMARY:Trening — '+(c?c.name:''),S().gym?'LOCATION:'+S().gym:'','BEGIN:VALARM','TRIGGER:-PT60M','ACTION:DISPLAY','DESCRIPTION:Trening','END:VALARM','END:VEVENT','END:VCALENDAR'].filter(Boolean).join('\r\n');
+  dl('trening-'+s.date+'.ics',txt,'text/calendar')}
+
+/* ---------- VEŽBE: izbor ---------- */
+let xp=null;
+function allEx(){const m={};Object.entries(EXLIB).forEach(([g,l])=>l.forEach(n=>m[n]=g));db.exercises.forEach(e=>m[e.name]=e.group||'Moje vežbe');return m}
+function openExPick(cb){xp={cb,q:''};const d=$('#dlg');if(d.open&&!cv.id){}const dd=document.createElement('dialog');dd.id='dlg3';dd.innerHTML=xpHtml();document.body.appendChild(dd);
+  dd.addEventListener('close',()=>{onDClose();dd.remove()});openD(dd);setTimeout(()=>{const i=dd.querySelector('#xq');if(i)i.focus()},100)}
+function xpHtml(){const m=allEx(),q=norm(xp.q),used={};db.sessions.forEach(s=>(s.ex||[]).forEach(e=>used[e.name]=(used[e.name]||0)+1));
+  const names=Object.keys(m).filter(n=>!q||norm(n+' '+m[n]).includes(q));const groups={};names.forEach(n=>(groups[m[n]]=groups[m[n]]||[]).push(n));
+  const fav=q?[]:Object.entries(used).sort((a,b)=>b[1]-a[1]).slice(0,8).map(x=>x[0]).filter(n=>m[n]);
+  return`<div class="dh"><button class="btn-s" data-act="xpclose">✕</button><h2>Izaberi vežbu</h2></div><div class="db">
+   <input class="fld" id="xq" type="search" placeholder="🔍 Traži vežbu…" value="${esc(xp.q)}">
+   ${xp.q.trim()&&!names.some(n=>norm(n)===q)?`<button class="btn-p" style="width:100%;margin-top:8px" data-act="xpnew">＋ Dodaj „${esc(xp.q.trim())}“</button>`:''}
+   ${fav.length?`<div class="sec">⭐ Najčešće</div><div class="chips">${fav.map(n=>`<button data-act="xppick" data-v="${esc(n)}">${esc(n)}</button>`).join('')}</div>`:''}
+   ${Object.entries(groups).map(([g,l])=>`<div class="sec">${esc(g)}</div><div class="chips">${l.map(n=>`<button data-act="xppick" data-v="${esc(n)}">${esc(n)}</button>`).join('')}</div>`).join('')}</div>`}
+
+/* ---------- ŠABLONI ---------- */
+function openTplPick(){const d=document.createElement('dialog');d.id='dlg3';
+  d.innerHTML=`<div class="dh"><button class="btn-s" data-act="xpclose">✕</button><h2>Šablon treninga</h2></div><div class="db">${db.templates.length?db.templates.map(t=>`<div class="fi" data-act="tplapply" data-v="${t.id}"><div class="grow"><div class="n">${esc(t.name)}</div><div class="xs muted">${t.ex.map(e=>esc(e.name)).join(', ')}</div></div></div>`).join(''):'<div class="empty">Još nema šablona.</div>'}
+   ${(sv.s.ex||[]).length?`<button style="width:100%;margin-top:10px" data-act="tplsave">💾 Sačuvaj trenutni trening kao šablon</button>`:''}</div>`;
+  document.body.appendChild(d);d.addEventListener('close',()=>{onDClose();d.remove()});openD(d)}
+function tplMgr(){const d=$('#dlg');d.innerHTML=`<div class="dh"><button class="btn-s" data-act="close">✕</button><h2>📋 Šabloni treninga</h2></div><div class="db">
+  <div class="small muted" style="margin-bottom:10px">Šablon se pravi iz termina: dodaj vežbe pa „📋 Šablon → Sačuvaj kao šablon“. Ovde ih možeš preimenovati ili obrisati.</div>
+  ${db.templates.length?db.templates.map(t=>`<div class="card" style="padding:10px 12px"><div class="row sp"><input class="fld grow" data-tpln="${t.id}" value="${esc(t.name)}" style="padding:7px 10px"><button class="btn-s btn-d" data-act="tpldel" data-v="${t.id}">🗑️</button></div><div class="xs muted" style="margin-top:6px">${t.ex.map(e=>esc(e.name)+(e.sets&&e.sets.length?' ('+e.sets.length+'×)':'')).join(', ')}</div></div>`).join(''):'<div class="empty">Još nema šablona.</div>'}</div>`;openD(d)}
+function exMgr(){const d=$('#dlg');d.innerHTML=`<div class="dh"><button class="btn-s" data-act="close">✕</button><h2>🏋️ Moje vežbe</h2></div><div class="db">
+  <div class="row"><input class="fld grow" id="exn" placeholder="Naziv nove vežbe"><select class="fld" id="exg" style="width:auto">${[...Object.keys(EXLIB),'Moje vežbe'].map(g=>`<option ${g==='Moje vežbe'?'selected':''}>${g}</option>`).join('')}</select></div>
+  <button class="btn-p" style="width:100%;margin-top:8px" data-act="exnew">＋ Dodaj vežbu</button>
+  <div class="sec">Tvoje vežbe</div>${db.exercises.length?db.exercises.map(e=>`<div class="row sp small" style="padding:7px 0;border-bottom:1px solid var(--line)"><span>${esc(e.name)} <span class="muted xs">· ${esc(e.group||'')}</span></span><button class="btn-s btn-g" data-act="exrm" data-v="${e.id}">✕</button></div>`).join(''):'<div class="xs muted">Nema dodatih vežbi — ugrađene su dostupne pri izboru.</div>'}</div>`;openD(d)}
+
+/* ---------- MERENJE ---------- */
+function openMeas(id){const m=id?db.measures.find(x=>x.id===id):{date:today()};const c=C(cv.id),pv=measOf(cv.id).pop();
+  const d=$('#dlg2');d.innerHTML=`<div class="dh"><button class="btn-s" data-act="close2">✕</button><h2>${id?'Izmeni merenje':'Novo merenje'} · ${esc(first(c&&c.name))}</h2></div><div class="db">
+   <label class="l">Datum</label><input class="fld" id="md" type="date" value="${esc(m.date)}">
+   <div class="grid g2" style="margin-top:10px">${MEAS.map(x=>`<div><label class="l">${x[1]} (${x[2]})</label><input class="fld" id="m_${x[0]}" inputmode="decimal" value="${esc(fmtN(m[x[0]]))}" placeholder="${pv&&pv[x[0]]!=null&&!id?'prošlo: '+fmtN(pv[x[0]]):''}"></div>`).join('')}</div>
+   <label class="l" style="margin-top:10px">Napomena</label><input class="fld" id="mn" value="${esc(m.note||'')}" placeholder="npr. ujutru, natašte">
+   <button class="btn-p" style="width:100%;margin-top:16px;padding:14px" data-act="savemeas" data-v="${id||''}">💾 Sačuvaj</button>
+   ${id?`<button class="btn-d" style="width:100%;margin-top:8px" data-act="delmeas" data-v="${id}">🗑️ Obriši merenje</button>`:''}</div>`;openD(d)}
+
+/* ---------- PAKET ---------- */
+function openPkg(id){const p=id?db.packages.find(x=>x.id===id):{name:'Mesečni paket',count:12,price:'',start:today(),end:addDays(today(),30),paid:false};
+  const d=$('#dlg2');d.innerHTML=`<div class="dh"><button class="btn-s" data-act="close2">✕</button><h2>${id?'Paket':'Novi paket'}</h2></div><div class="db">
+   <div class="chips" style="margin-bottom:10px">${[['8 treninga',8,30],['12 treninga',12,30],['16 treninga',16,30],['Neograničeno mesečno',0,30],['10 treninga (2 meseca)',10,60]].map(x=>`<button data-act="pkpre" data-n="${x[0]}" data-c="${x[1]}" data-d="${x[2]}">${x[0]}</button>`).join('')}</div>
+   <label class="l">Naziv</label><input class="fld" id="pn" value="${esc(p.name||'')}">
+   <div class="grid g2" style="margin-top:10px"><div><label class="l">Broj treninga (0 = neograničeno)</label><input class="fld" id="pc" type="number" inputmode="numeric" value="${esc(p.count||0)}"></div><div><label class="l">Cena (${esc(S().cur)})</label><input class="fld" id="pp" inputmode="decimal" value="${esc(p.price||'')}"></div>
+   <div><label class="l">Važi od</label><input class="fld" id="ps" type="date" value="${esc(p.start)}"></div><div><label class="l">Važi do (nije obavezno)</label><input class="fld" id="pe" type="date" value="${esc(p.end||'')}"></div></div>
+   <label class="row" style="margin-top:12px;cursor:pointer"><input type="checkbox" id="ppd" ${p.paid?'checked':''} style="width:22px;height:22px"><span>Plaćeno</span></label>
+   <button class="btn-p" style="width:100%;margin-top:16px;padding:14px" data-act="savepkg" data-v="${id||''}">💾 Sačuvaj</button>
+   ${id?`<button class="btn-d" style="width:100%;margin-top:8px" data-act="delpkg" data-v="${id}">🗑️ Obriši paket</button>`:''}</div>`;openD(d)}
+
+/* ---------- PODSETNICI ZA SUTRA ---------- */
+function bulkRem(d){const ss=daySess(d).filter(s=>s.status==='zak');const dd=$('#dlg2');
+  dd.innerHTML=`<div class="dh"><button class="btn-s" data-act="close2">✕</button><h2>🔔 Podsetnici · ${esc(dlabel(d))}</h2></div><div class="db">
+   <div class="small muted" style="margin-bottom:10px">Dodirni kanal pored klijenta — otvoriće se poruka sa tekstom, samo je pošalji. Posle se vrati ovde za sledećeg.</div>
+   ${ss.map(s=>{const c=C(s.cid);return`<div class="card" style="padding:10px 12px"><div class="row sp"><div><b>${esc(s.time)}</b> · ${esc(cname(s.cid))}</div>${s.remSent?'<span class="badge" style="color:var(--ok)">✔ poslato</span>':''}</div>${c&&c.phone?msgBtns('brem','data-v="'+s.id+'"'):'<div class="xs muted" style="margin-top:6px">Nema broja telefona</div>'}</div>`}).join('')||'<div class="empty">Nema zakazanih termina.</div>'}</div>`;openD(dd)}
+
+/* ---------- pregled napretka za klijenta ---------- */
+function progText(c){const ms=measOf(c.id),f=ms[0],l=ms[ms.length-1],odr=sessOf(c.id).filter(s=>s.status==='odr');
+  let t=`Zdravo ${first(c.name)}! 💪 Tvoj napredak:\n• Treninga ukupno: ${odr.length}`;const m30=odr.filter(s=>dayDiff(today(),s.date)<30).length;t+=`\n• U poslednjih 30 dana: ${m30}`;
+  if(f&&l&&f!==l)MEAS.forEach(x=>{if(f[x[0]]!=null&&l[x[0]]!=null&&f[x[0]]!==l[x[0]])t+=`\n• ${x[1]}: ${fmtN(f[x[0]])} → ${fmtN(l[x[0]])} ${x[2]} (${(l[x[0]]-f[x[0]]>0?'+':'')+r1(l[x[0]]-f[x[0]])})`});
+  t+=`\nSamo tako nastavi! ${S().trainer||''}`;return t.trim()}
+function progDlg(){const c=C(cv.id),t=progText(c),d=$('#dlg2');
+  d.innerHTML=`<div class="dh"><button class="btn-s" data-act="close2">✕</button><h2>📤 Napredak · ${esc(first(c.name))}</h2></div><div class="db"><textarea class="fld" id="ptx" rows="10">${esc(t)}</textarea><div style="margin-top:10px">${msgBtns('pmsg')}</div></div>`;openD(d)}
+function freeMsg(c,txt,title){const d=$('#dlg2');d.innerHTML=`<div class="dh"><button class="btn-s" data-act="close2">✕</button><h2>${esc(title)}</h2></div><div class="db"><textarea class="fld" id="ptx" rows="6">${esc(txt)}</textarea><div style="margin-top:10px">${msgBtns('fmsg','data-v="'+c.id+'"')}</div></div>`;openD(d)}
+
+
+/* ---------- akcije ---------- */
+const APPS_URL='https://gembirdt-bit.github.io/atmosaplikacije/';
+document.addEventListener('click',async ev=>{const el=ev.target.closest('[data-act]');if(!el)return;const a=el.dataset.act,v=el.dataset.v;
+  if(el.tagName==='A')return;
+  switch(a){
+  case'tab':ui.tab=v;if($('#dlg').open)$('#dlg').close();render();scrollTo(0,0);break;
+  case'close':$('#dlg').close();cv.id=null;render();break;
+  case'close2':$('#dlg2').close();break;
+  case'wk':ui.week=v==='0'?weekStart(today()):addDays(ui.week,+v);render();break;
+  case'cf':ui.cf=v;render();break;
+  case'rm':{const[y,m]=ui.rm.split('-').map(Number),d=new Date(y,m-1+(+v),1);ui.rm=d.getFullYear()+'-'+pad(d.getMonth()+1);render();break}
+  case'newclient':editClient();break;
+  case'editclient':editClient(v);break;
+  case'saveclient':saveClient(v);break;
+  case'archclient':{const c=C(v);c.arch=!c.arch;save();$('#dlg2').close();cRedraw();render();toast(c.arch?'Klijent arhiviran':'Klijent vraćen');break}
+  case'delclient':{const c=C(v);const n=sessOf(v).length;if(!confirm(`Obrisati klijenta ${c.name}${n?' i svih '+n+' termina':''}, merenja i pakete? Ovo ne može da se vrati.`))break;
+    db.clients=db.clients.filter(x=>x.id!==v);['sessions','measures','packages'].forEach(k=>db[k]=db[k].filter(x=>x.cid!==v));save();$('#dlg2').close();$('#dlg').close();cv.id=null;render();toast('Klijent obrisan');break}
+  case'openclient':openClient(v);break;
+  case'ctab':cv.tab=v;cRedraw();break;
+  case'cmon':{const[y,m]=cv.mon.split('-').map(Number),d=new Date(y,m-1+(+v),1);cv.mon=d.getFullYear()+'-'+pad(d.getMonth()+1);cRedraw();break}
+  case'metric':cv.metric=v;cRedraw();break;
+  case'cmsg':{const c=C(cv.id),n=nextSess(c.id);sendMsg(el.dataset.ch,c,n?fill(S().remTpl,msgVars(c,n)):'Zdravo '+first(c.name)+'! ');break}
+  case'inactmsg':{const c=C(v);freeMsg(c,fill(S().notTpl,msgVars(c)),'💬 Poruka · '+first(c.name));break}
+  case'fmsg':{const c=C(v);sendMsg(el.dataset.ch,c,$('#ptx').value);break}
+  case'shareprog':progDlg();break;
+  case'pmsg':sendMsg(el.dataset.ch,C(cv.id),$('#ptx').value);break;
+  /* termin */
+  case'newsess':openSess(null,{date:el.dataset.d,cid:el.dataset.c||(cv.id&&$('#dlg').open?cv.id:'')});break;
+  case'opensess':openSess(v);break;
+  case'sst':sRead();sv.s.status=v;sRedraw();break;
+  case'spaid':sRead();sv.s.paid=!sv.s.paid;sRedraw();break;
+  case'sc-new':{const n=(prompt('Ime i prezime novog klijenta:')||'').trim();if(!n)break;const ph=(prompt('Broj telefona (nije obavezno):')||'').trim();sRead();const c={id:uid(),created:Date.now(),name:n,phone:ph,start:today(),color:CCOL[db.clients.length%CCOL.length]};db.clients.push(c);sv.s.cid=c.id;sv.s.pkg='';sv.s.price=num(S().price)||0;save();sRedraw(true);toast('Klijent dodat ✔');break}
+  case'savesess':if(saveSess()){closeSessUpd();toast(sv.rep>1?'Zakazano '+sv.rep+' termina ✔':'Sačuvano ✔')}break;
+  case'delsess':{const s=sv.s;const ser=s.ser&&db.sessions.filter(x=>x.ser===s.ser&&x.date>=s.date&&x.status==='zak'&&x.id!==s.id);
+    let all=false;if(ser&&ser.length){all=confirm(`Ovaj termin se ponavlja. Obrisati i sledećih ${ser.length} zakazanih termina iz serije?\n\nOK = obriši sve sledeće · Otkaži = samo ovaj`)}else if(!confirm('Obrisati termin?'))break;
+    db.sessions=db.sessions.filter(x=>x.id!==s.id&&!(all&&ser.some(y=>y.id===x.id)));save();closeSessUpd();toast('Termin obrisan');break}
+  case'qdone':{const s=db.sessions.find(x=>x.id===v);s.status='odr';s.doneAt=Date.now();save();render();openSess(v);toast('✅ Održan — upiši šta je rađeno');break}
+  case'qrem':{openSess(v);setTimeout(()=>{const b=$('#dlg2 .mbtn');if(b)b.scrollIntoView({behavior:'smooth',block:'center'})},200);break}
+  case'srem':{const[c,s]=sessVars();if(await sendMsg(el.dataset.ch,c,fill(S().remTpl,msgVars(c,s)))&&el.dataset.ch!=='copy'){s.remSent=Date.now();if(!sv.isNew){saveSess();sRedraw()}}break}
+  case'ssum':{const[c,s]=sessVars();const t=fill(S().sumTpl,Object.assign(msgVars(c,s),{trening:workoutText(s)}));sendMsg(el.dataset.ch,c,t);break}
+  case'brem':{const s=db.sessions.find(x=>x.id===v),c=C(s.cid);if(await sendMsg(el.dataset.ch,c,fill(S().remTpl,msgVars(c,s)))&&el.dataset.ch!=='copy'){s.remSent=Date.now();save();const st=$('#dlg2 .db').scrollTop;bulkRem(s.date);$('#dlg2 .db').scrollTop=st;render()}break}
+  case'bulkrem':bulkRem(el.dataset.d);break;
+  case'sics':{const s=sRead();ics(s);break}
+  case'exadd':sRead();openExPick(n=>{sv.s.ex.push({name:n,sets:[{r:'',kg:''},{r:'',kg:''},{r:'',kg:''}]});sRedraw()});break;
+  case'exdel':sRead();sv.s.ex.splice(+el.dataset.i,1);sRedraw();break;
+  case'exup':{sRead();const i=+el.dataset.i,e=sv.s.ex;[e[i-1],e[i]]=[e[i],e[i-1]];sRedraw();break}
+  case'setadd':{sRead();const e=sv.s.ex[+el.dataset.i];const l=e.sets[e.sets.length-1];e.sets.push({r:l?l.r:'',kg:l?l.kg:''});sRedraw();break}
+  case'setdel':sRead();sv.s.ex[+el.dataset.i].sets.splice(+el.dataset.j,1);sRedraw();break;
+  case'exlast':{sRead();const l=sessOf(sv.s.cid).filter(x=>x.id!==sv.s.id&&x.ex&&x.ex.length&&x.status==='odr').sort(sortS).pop();if(!l){toast(sv.s.cid?'Klijent još nema upisan trening':'Prvo izaberi klijenta');break}
+    sv.s.ex=JSON.parse(JSON.stringify(l.ex));sRedraw();toast('Preuzet trening od '+dshort(l.date));break}
+  case'extpl':sRead();openTplPick();break;
+  case'tplapply':{const t=db.templates.find(x=>x.id===v);sv.s.ex=(sv.s.ex||[]).concat(JSON.parse(JSON.stringify(t.ex)));$('#dlg3').close();sRedraw();toast('Šablon primenjen');break}
+  case'tplsave':{const n=(prompt('Naziv šablona (npr. Noge A, Gornji deo):')||'').trim();if(!n)break;db.templates.push({id:uid(),name:n,ex:JSON.parse(JSON.stringify(sv.s.ex)).map(e=>Object.assign(e,{sets:(e.sets||[]).filter(x=>x.r||x.kg)}))});save();$('#dlg3').close();toast('Šablon sačuvan ✔');break}
+  case'tpldel':if(confirm('Obrisati šablon?')){db.templates=db.templates.filter(x=>x.id!==v);save();tplMgr2()}break;
+  case'tplmgr':tplMgr();break;
+  case'exmgr':exMgr();break;
+  case'exnew':{const n=$('#exn').value.trim();if(!n)break;if(allEx()[n]){toast('Ta vežba već postoji');break}db.exercises.push({id:uid(),name:n,group:$('#exg').value});save();exMgr2();break}
+  case'exrm':db.exercises=db.exercises.filter(x=>x.id!==v);save();exMgr2();break;
+  case'xpclose':$('#dlg3').close();break;
+  case'xppick':{const cb=xp.cb;$('#dlg3').close();cb(v);break}
+  case'xpnew':{const n=xp.q.trim();db.exercises.push({id:uid(),name:n,group:'Moje vežbe'});save();const cb=xp.cb;$('#dlg3').close();cb(n);break}
+  /* merenja */
+  case'newmeas':openMeas();break;
+  case'editmeas':openMeas(v);break;
+  case'savemeas':{const m=v?db.measures.find(x=>x.id===v):{id:uid(),cid:cv.id};m.date=$('#md').value||today();let any=false;MEAS.forEach(x=>{const n=num($('#m_'+x[0]).value);if(n!=null){m[x[0]]=n;any=true}else delete m[x[0]]});m.note=$('#mn').value.trim();
+    if(!any){toast('Upiši bar jednu meru');break}if(!v)db.measures.push(m);save();$('#dlg2').close();cRedraw();toast('Merenje sačuvano ✔');break}
+  case'delmeas':if(confirm('Obrisati merenje?')){db.measures=db.measures.filter(x=>x.id!==v);save();$('#dlg2').close();cRedraw()}break;
+  /* paketi */
+  case'newpkg':openPkg();break;
+  case'editpkg':openPkg(v);break;
+  case'pkpre':$('#pn').value=el.dataset.n;$('#pc').value=el.dataset.c;$('#pe').value=addDays($('#ps').value||today(),+el.dataset.d);if(!$('#pp').value&&num(S().price)&&+el.dataset.c)$('#pp').value=Math.round(num(S().price)*(+el.dataset.c)*.9);break;
+  case'savepkg':{const p=v?db.packages.find(x=>x.id===v):{id:uid(),cid:cv.id};const wasPaid=p.paid;Object.assign(p,{name:$('#pn').value.trim()||'Paket',count:Math.max(0,+$('#pc').value||0),price:num($('#pp').value)||0,start:$('#ps').value||today(),end:$('#pe').value,paid:$('#ppd').checked});
+    if(p.paid&&!wasPaid)p.paidDate=today();
+    if(!v){db.packages.filter(x=>x.cid===p.cid&&x.id!==p.id).forEach(x=>x.renewed=true);db.packages.push(p);
+      /* zakazani termini posle početka paketa prelaze na paket */
+      db.sessions.forEach(s=>{if(s.cid===p.cid&&s.status==='zak'&&s.date>=p.start&&(!p.end||s.date<=p.end)&&!s.paid){s.pkg=p.id;s.price=0}})}
+    save();$('#dlg2').close();cRedraw();toast('Paket sačuvan ✔');break}
+  case'delpkg':if(confirm('Obrisati paket? Termini ostaju.')){db.packages=db.packages.filter(x=>x.id!==v);db.sessions.forEach(s=>{if(s.pkg===v)s.pkg=''});save();$('#dlg2').close();cRedraw()}break;
+  case'paysess':{const s=db.sessions.find(x=>x.id===v);s.paid=true;save();cRedraw();break}
+  case'payall':sessOf(cv.id).forEach(s=>{if(s.status==='odr'&&s.price)s.paid=true});save();cRedraw();toast('Sve plaćeno ✔');break;
+  /* podešavanja */
+  case'theme':S().theme=v;save();render();break;
+  case'accent':S().accent=v;save();render();break;
+  case'ndotog':S().ndoUsed=!S().ndoUsed;save();render();break;
+  case'tplreset':if(confirm('Vratiti podrazumevane tekstove poruka?')){Object.assign(S(),{remTpl:DEF_REM,sumTpl:DEF_SUM,notTpl:DEF_NOT});save();render()}break;
+  case'export':doExport();break;
+  case'import':$('#fileIn').click();break;
+  case'csv':doCsv(ui.rm);break;
+  case'csvall':doCsv();break;
+  case'share-month':{const[y,m]=ui.rm.split('-').map(Number),ss=db.sessions.filter(s=>s.date.slice(0,7)===ui.rm),o=ss.filter(s=>s.status==='odr');
+    const t=`${APP} — ${MONF[m-1]} ${y}\nOdržano treninga: ${o.length}\nOtkazano: ${ss.filter(s=>s.status==='otk').length} · nije došao: ${ss.filter(s=>s.status==='ndo').length}\nAktivnih klijenata: ${new Set(o.map(s=>s.cid)).size}\nPrihod (plaćeni termini): ${money(o.filter(s=>s.paid).reduce((a,s)=>a+(+s.price||0),0))}`;
+    sendMsg(navigator.share?'share':'copy',null,t);break}
+  case'wipe':if(confirm('Obrisati SVE podatke sa ovog uređaja? Napravi prvo rezervnu kopiju!')&&confirm('Sigurno? Ovo ne može da se vrati.')){const s=S();db=fresh();db.settings=s;save();render();toast('Podaci obrisani')}break;
+  case'install':if(instEv){instEv.prompt();instEv.userChoice.finally(()=>{instEv=null;render()})}break;
+  case'insthide':S().instHide=true;save();render();break;
+  case'apps':window.open(APPS_URL,'_blank','noopener');break;
+  case'updchk':updCheck(true);break;
+  case'updnow':updApply();break;
+  case'gdconnect':gdConnect();break;
+  case'gdsync':gdSync(true);break;
+  case'gddis':gdDisconnect();break;
+  }});
+const tplMgr2=()=>tplMgr(),exMgr2=()=>exMgr();
+/* polja */
+document.addEventListener('input',ev=>{const t=ev.target;
+  if(t.id==='cq'){ui.cq=t.value;const p=t.selectionStart;render();const n=$('#cq');n.focus();try{n.setSelectionRange(p,p)}catch{}}
+  else if(t.id==='xq'){xp.q=t.value;const d=$('#dlg3'),p=t.selectionStart;d.innerHTML=xpHtml();const n=d.querySelector('#xq');n.focus();try{n.setSelectionRange(p,p)}catch{}}
+  else if(t.dataset.set!==undefined&&t.closest('#app')){const k=t.dataset.set;let v=t.value;if(['dur','inactive'].includes(k))v=num(v)||0;S()[k]=v;save()}
+  else if(t.dataset.cn){const c=C(cv.id);if(c){c[t.dataset.cn]=t.value;save()}}
+  else if(t.dataset.tpln){const x=db.templates.find(y=>y.id===t.dataset.tpln);if(x){x.name=t.value;save()}}
+  else if(t.dataset.ex!==undefined&&sv){const e=sv.s.ex[+t.dataset.ex];if(!e)return;if(t.dataset.k==='note')e.note=t.value;else{const x=e.sets[+t.dataset.set];if(x)x[t.dataset.k]=t.dataset.k==='kg'?num(t.value):t.value}}});
+document.addEventListener('change',ev=>{const t=ev.target;
+  if(t.id==='spk'){sRead();if(!sv.s.pkg&&!sv.s.price)sv.s.price=num(S().price)||0;sRedraw()}
+  else if(t.id==='sc'){sRead();const pk=activePkg(sv.s.cid);sv.s.pkg=pk?pk.id:'';sv.s.price=pk?0:(num(S().price)||0);sRedraw()}
+  else if(t.id==='sd'||t.id==='st'||t.id==='sdu')sRedraw()});
+$('#fileIn').addEventListener('change',async ev=>{const f=ev.target.files[0];ev.target.value='';if(!f)return;
+  try{const j=JSON.parse(await f.text());if(!j||!Array.isArray(j.clients))throw 0;
+    if(!confirm(`Vratiti rezervnu kopiju (${j.clients.length} klijenata, ${(j.sessions||[]).length} termina)? Trenutni podaci na ovom uređaju biće zamenjeni.`))return;
+    const st=db.settings;db=normDb(j);db.settings=Object.assign(db.settings,{theme:st.theme,accent:st.accent});save();render();toast('Podaci vraćeni ✔')}
+  catch{toast('⚠ Fajl nije ispravna rezervna kopija')}});
+['dlg','dlg2'].forEach(id=>document.getElementById(id).addEventListener('close',onDClose));
+
+/* ---------- rezervna kopija / CSV ---------- */
+function dl(name,txt,type){const b=new Blob([txt],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000)}
+async function doExport(){const o=Object.assign({app:APP,ver:VER,exported:new Date().toISOString()},db);delete o._lh;delete o._mt;const txt=JSON.stringify(o,null,1),name='atmos-trener-'+today()+'.json';
+  try{const file=new File([txt],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[file]})&&/Android|iPhone|iPad/i.test(navigator.userAgent)){await navigator.share({files:[file],title:APP+' — rezervna kopija'});return}}catch(e){if(e&&e.name==='AbortError')return}
+  dl(name,txt,'application/json');toast('Rezervna kopija preuzeta ✔')}
+function doCsv(month){const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+  const rows=[['Datum','Vreme','Trajanje (min)','Klijent','Telefon','Vrsta','Status','Cena','Plaćeno','Paket','Vežbe','Beleška'].map(q).join(';')];
+  db.sessions.filter(s=>!month||s.date.slice(0,7)===month).sort(sortS).forEach(s=>{const c=C(s.cid),p=s.pkg&&db.packages.find(x=>x.id===s.pkg);
+    rows.push([s.date,s.time,s.dur,c?c.name:'',c?c.phone:'',s.type,ST[s.status][0],s.price?String(s.price).replace('.',','):'',s.paid?'da':(s.price?'ne':''),p?p.name:'',workoutText(s).replace(/\n/g,' | '),s.notes].map(q).join(';'))});
+  dl('atmos-trener-termini-'+(month||today())+'.csv','﻿'+rows.join('\r\n'),'text/csv;charset=utf-8')}
+
+/* ---------- GOOGLE DRIVE SINHRONIZACIJA ----------
+   Podaci se čuvaju u fajlu „Atmos Personalni trener — podaci.json“ na Google Drive-u korisnika (dozvola drive.file:
+   aplikacija vidi samo fajlove koje je sama napravila). Svi uređaji prijavljeni istim Google nalogom dele podatke.
+   Ako isti zapis menjaju dva uređaja, važi kasnija izmena. */
+const GD_CLIENT='867108184410-ctavf0871su36rju6n465rd0149ps2mu.apps.googleusercontent.com';
+const GD_SCOPE='https://www.googleapis.com/auth/drive.file',GD_NAME='Atmos Personalni trener — podaci.json',GD_KEY='atmosTrener1_gdrive';
+const GD_COLLS=COLLS;
+let gd=(()=>{try{const x=JSON.parse(localStorage.getItem(GD_KEY));if(x&&x.h)return x}catch{}return{on:false,fileId:'',h:{},last:0,err:'',email:''}})();
+let gdTok=(()=>{try{const t=JSON.parse(sessionStorage.getItem(GD_KEY+'_t'));if(t&&t.exp>Date.now()+60000)return t}catch{}return null})();
+let gdClient=null,gdBusy=false,gdT=null,gdWait=null;
+const gdStore=()=>{try{localStorage.setItem(GD_KEY,JSON.stringify(gd))}catch{}};
+const gdValid=()=>!!(gdTok&&gdTok.exp>Date.now()+60000);
+function gdHash(o){const t=JSON.stringify(o);let h=2166136261;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)+t.length.toString(36)}
+function gdLocal(){const m={};GD_COLLS.forEach(c=>(db[c]||[]).forEach(r=>{if(r&&r.id)m[c+'/'+r.id]=r}));const s=gdSingles();for(const k in s)if(s[k])m[k]=s[k];return m}
+/* podešavanja (ime trenera, cene, tekst poruka, izgled) — sinhronizuju se kao celina, pobeđuje novija izmena */
+const SETK=['theme','accent','trainer','gym','phone','dur','price','cur','ndoUsed','remTpl','sumTpl','notTpl','inactive'];
+function gdSetPart(s){const o={};SETK.forEach(k=>o[k]=s[k]);return o}
+function gdSingles(){return{_set:gdSetPart(S())}}
+function gdApplySingle(k,v){if(k==='_set')SETK.forEach(x=>{if(x in v)S()[x]=v[x]});const cur=gdSingles()[k];db._lh[k]=gdHash(cur);return cur}
+function gdLoadLib(){return new Promise((res,rej)=>{if(window.google&&google.accounts&&google.accounts.oauth2)return res();
+  const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=()=>res();s.onerror=()=>rej(new Error('Google biblioteka nije učitana (internet?)'));document.head.appendChild(s)})}
+async function gdAuth(consent){await gdLoadLib();
+  return new Promise((res,rej)=>{
+    if(!gdClient)gdClient=google.accounts.oauth2.initTokenClient({client_id:GD_CLIENT,scope:GD_SCOPE,callback:()=>{},error_callback:()=>{}});
+    gdClient.callback=r=>{if(r&&r.access_token){gdTok={t:r.access_token,exp:Date.now()+(Number(r.expires_in)||3600)*1000};try{sessionStorage.setItem(GD_KEY+'_t',JSON.stringify(gdTok))}catch{}res()}else rej(new Error((r&&r.error)||'Dozvola nije data'))};
+    gdClient.error_callback=e=>rej(new Error(e&&e.type==='popup_closed'?'Prozor za prijavu je zatvoren':'Prijava na Google nije uspela'));
+    gdClient.requestAccessToken({prompt:consent?'consent':'',hint:gd.email||undefined})})}
+async function gdApi(url,opt){const r=await fetch(url,Object.assign({},opt,{headers:Object.assign({Authorization:'Bearer '+gdTok.t},(opt&&opt.headers)||{})}));
+  if(r.status===401){gdTok=null;try{sessionStorage.removeItem(GD_KEY+'_t')}catch{}throw new Error('auth')}
+  if(!r.ok)throw new Error('Drive greška '+r.status);return r}
+async function gdFindFile(){
+  if(gd.fileId){try{const j=await (await gdApi('https://www.googleapis.com/drive/v3/files/'+gd.fileId+'?fields=id,trashed')).json();if(!j.trashed)return gd.fileId}catch(e){if(e.message==='auth')throw e}gd.fileId=''}
+  const q=encodeURIComponent("name='"+GD_NAME.replace(/'/g,"\\'")+"' and trashed=false");
+  const j=await (await gdApi('https://www.googleapis.com/drive/v3/files?spaces=drive&orderBy=modifiedTime desc&fields=files(id)&q='+q)).json();
+  gd.fileId=(j.files&&j.files[0]&&j.files[0].id)||'';return gd.fileId}
+async function gdUpload(body){const txt=JSON.stringify(body);
+  if(gd.fileId){await gdApi('https://www.googleapis.com/upload/drive/v3/files/'+gd.fileId+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body:txt});return}
+  const b='atmostrener'+Date.now(),meta={name:GD_NAME,mimeType:'application/json',description:'Podaci aplikacije Atmos Personalni trener. Ne menjaj ručno.'};
+  const r=await gdApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+b},
+    body:'--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: application/json\r\n\r\n'+txt+'\r\n--'+b+'--'});
+  gd.fileId=(await r.json()).id}
+function gdSoon(ms){if(!gd.on||!GD_CLIENT)return;clearTimeout(gdT);gdT=setTimeout(()=>{if(gdValid())gdSync()},ms==null?5000:ms)}
+async function gdSync(manual){
+  if(!GD_CLIENT||!gd.on||gdBusy)return;
+  if(!navigator.onLine){gd.err='Nema interneta — izmene čekaju';gdStore();if(manual)toast(gd.err);return}
+  if(document.querySelector('dialog[open]')&&!manual){gdSoon(20000);return}
+  gdBusy=true;if(manual)render();let redraw=!!manual,retry=false;
+  try{
+    if(!gdValid()){if(!manual){gd.err='Potrebna je potvrda — dodirni „Sinhronizuj“';gdStore();return}await gdAuth(false)}
+    const ver=async()=>gd.fileId?Number((await (await gdApi('https://www.googleapis.com/drive/v3/files/'+gd.fileId+'?fields=version')).json()).version)||0:0;
+    let remote={recs:{}},v0=0;
+    if(await gdFindFile()){v0=await ver();try{remote=await (await gdApi('https://www.googleapis.com/drive/v3/files/'+gd.fileId+'?alt=media')).json()}catch(e){if(e.message==='auth')throw e;remote={recs:{}}}}
+    const R=remote.recs||{},loc=gdLocal(),now=Date.now(),out=Object.assign({},R);let got=0,sent=0;
+    const mine={};Object.keys(loc).forEach(k=>{const h=gdHash(loc[k]);if(gd.h[k]!==h||!(k in R))mine[k]=loc[k]});
+    Object.keys(gd.h).forEach(k=>{if(!(k in loc))mine[k]=null});
+    /* profil/podešavanja: ako su promenjeni i ovde i na drugom uređaju — novija izmena pobeđuje; uređaj koji se prvi put povezuje preuzima sa Drive-a */
+    ['_set'].forEach(k=>{if(!(k in mine)||!(k in R)||!R[k]||R[k].d==null)return;const rh=gdHash(R[k].d);if(rh===gd.h[k])return;
+      if(gd.h[k]===undefined||(R[k].m||0)>=(db._mt[k]||0))delete mine[k]});
+    Object.keys(R).forEach(k=>{
+      const rv=R[k]&&R[k].d!==undefined?R[k].d:null,rh=rv?gdHash(rv):null;
+      if(k in mine)return;if(rh===(gd.h[k]||null))return;
+      if(k==='_set'){if(rv){gd.h[k]=gdHash(gdApplySingle(k,rv));got++}return}
+      const[c,id]=k.split('/');if(!GD_COLLS.includes(c))return;
+      const i=db[c].findIndex(x=>x.id===id);
+      if(rv){if(i>=0)db[c][i]=rv;else db[c].push(rv);gd.h[k]=rh}else{if(i>=0)db[c].splice(i,1);delete gd.h[k]}
+      got++});
+    Object.keys(mine).forEach(k=>{out[k]={t:now,d:mine[k]};if(k[0]==='_')out[k].m=db._mt[k]||now;sent++;if(mine[k])gd.h[k]=gdHash(mine[k]);else delete gd.h[k]});
+    if(gd.fileId&&sent&&(await ver())!==v0){if((gdSync.retry=(gdSync.retry||0)+1)<=3){retry=true;gdBusy=false;setTimeout(()=>gdSync(manual),300+Math.random()*700);return}}
+    gdSync.retry=0;
+    if(sent||!gd.fileId)await gdUpload({app:APP,v:1,t:new Date().toISOString(),recs:out});
+    if(got){try{localStorage.setItem(KEY,JSON.stringify(db))}catch{}}
+    gd.last=Date.now();gd.err='';gdStore();
+    if(manual)toast(got?'Sinhronizovano ✔ — stiglo izmena: '+got:'Sinhronizovano ✔');
+    if(got)redraw=true;
+  }catch(e){gd.err=e.message==='auth'?'Potrebna je potvrda — dodirni „Sinhronizuj“':String(e.message||'Greška');gdStore();if(manual)toast('⚠ '+gd.err)}
+  finally{if(!retry){gdBusy=false;gdRender(redraw)}}}
+function gdRender(full){const a=document.activeElement;if(document.querySelector('dialog[open]')||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))){clearTimeout(gdWait);gdWait=setTimeout(()=>gdRender(full),1500);return}if(full||ui.tab==='podesavanja')render();else $('#gdst').textContent=gd.on?(gd.err?'☁️ ⚠':'☁️'):''}
+async function gdConnect(){
+  try{await gdAuth(true);
+    try{const u=await (await gdApi('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)')).json();gd.email=(u.user&&u.user.emailAddress)||''}catch{}
+    gd.on=true;gd.h={};gd.fileId='';
+    gdStore();toast('Google Drive povezan ✔');await gdSync(true)}
+  catch(e){toast('⚠ '+(e.message||'Povezivanje nije uspelo'))}}
+function gdDisconnect(){
+  if(!confirm('Prekinuti sinhronizaciju sa Google Drive-om? Podaci ostaju i na uređaju i na Drive-u.'))return;
+  try{if(gdTok&&window.google&&google.accounts)google.accounts.oauth2.revoke(gdTok.t,()=>{})}catch{}
+  gdTok=null;try{sessionStorage.removeItem(GD_KEY+'_t')}catch{}
+  gd={on:false,fileId:'',h:{},last:0,err:'',email:''};gdStore();render();toast('Veza sa Google Drive-om je prekinuta')}
+function gdCard(){
+  if(!gd.on)return`<div class="card"><h3>☁️ Google Drive</h3><div class="small muted" style="margin-bottom:10px">Čuvaj klijente i termine na svom Google Drive-u i koristi ih na više uređaja (telefon, tablet, računar). Ako ti se pokvari ili izgubi telefon, ništa ne gubiš. Aplikacija vidi samo svoj fajl „${esc(GD_NAME)}“, ništa drugo sa tvog Drive-a.</div>
+    <button class="btn-p" data-act="gdconnect" style="width:100%">☁️ Poveži Google Drive</button></div>`;
+  const t=gd.last?new Date(gd.last):null;
+  return`<div class="card"><h3>☁️ Google Drive <span class="badge" style="color:var(--ok)">povezano</span></h3>
+    <div class="small muted">${gd.email?esc(gd.email)+'<br>':''}${t?'Poslednja sinhronizacija: '+dlabel(ds(t))+' u '+pad(t.getHours())+':'+pad(t.getMinutes()):'Još nije sinhronizovano'}</div>
+    ${gd.err?`<div class="warnb" style="margin:8px 0 0">${esc(gd.err)}</div>`:''}
+    <div class="grid g2" style="margin-top:10px"><button class="btn-p" data-act="gdsync" ${gdBusy?'disabled':''}>${gdBusy?'<span class="spin"></span>':'🔄'} Sinhronizuj</button><button data-act="gddis">Prekini vezu</button></div></div>`}
+setInterval(()=>{if(gd.on&&gdValid())gdSync()},5*60000);
+let lastDay=today();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;const t=today();
+  if(t!==lastDay){lastDay=t;if(ui.week===weekStart(addDays(t,-1))||true)ui.week=weekStart(t);if(!document.querySelector('dialog[open]'))render()}gdSoon(1500)});
+addEventListener('online',()=>gdSoon(1000));
+
+
+/* ---------- instalacija ---------- */
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();instEv=e;if(!document.querySelector('dialog[open]')&&(ui.tab==='podesavanja'||ui.tab==='danas'))render()});
+addEventListener('appinstalled',()=>{instEv=null;toast(APP+' je instalirana ✔');render()});
+/* ---------- AŽURIRANJE ---------- */
+let swReg=null;
+function updBar(){if($('#updbar'))return;const d=document.createElement('div');d.id='updbar';
+  d.style.cssText='position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.35)';
+  d.innerHTML='<span class="small grow">🎉 Stigla je nova verzija aplikacije</span><button class="btn-p btn-s" data-act="updnow">Ažuriraj</button>';document.body.appendChild(d)}
+async function updApply(){toast('Ažuriram…');try{const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}catch{}
+  try{if(swReg){await swReg.update();if(swReg.waiting)swReg.waiting.postMessage('skip')}}catch{}
+  setTimeout(()=>location.reload(),400)}
+async function updCheck(manual){
+  if(!navigator.onLine){if(manual)toast('Nema interneta — ažuriranje nije moguće proveriti');return}
+  try{if(swReg)swReg.update().catch(()=>{});
+    const t=await (await fetch('index.html?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const VER='([^']+)'/),nv=m&&m[1];
+    if(nv&&nv!==VER){if(manual)updApply();else updBar()}else if(manual)toast('Imaš najnoviju verziju ('+VER+') ✔')}
+  catch{if(manual)toast('Provera nije uspela — pokušaj ponovo')}}
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{swReg=reg;
+  reg.addEventListener('updatefound',()=>{const w=reg.installing;w&&w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)updBar()})});
+  setTimeout(()=>updCheck(false),4000)}).catch(()=>{}));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&swReg&&Date.now()-(updCheck.t||0)>3600e3){updCheck.t=Date.now();updCheck(false)}});
+
+
+matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(S().theme==='auto')render()});
+markMt();render();
+if(gd.on&&gdValid())gdSoon(800);
+</script>
+<div class="coffee-ov" id="coffeeOv" role="dialog" aria-modal="true" aria-labelledby="coffeeT"><div class="coffee-box"><button class="coffee-x" id="coffeeX" aria-label="Zatvori">&times;</button><h3 id="coffeeT">&#9749; Plati mi kafu</h3><p>Ako Vam se dopadaju moje aplikacije i želite da uplatite neki simboličan iznos za kafu ili ručak :D</p><p>Možete donirati na račun:</p><div class="coffee-acc">115000000006810143</div><p><b>Željko Ilić</b><br>Beograd</p><button class="btn-p" id="coffeeCopy" type="button">Kopiraj broj računa</button><div class="coffee-amts"><button type="button" data-a="200" class="">200 RSD</button><button type="button" data-a="500" class="on">500 RSD</button><button type="button" data-a="1000" class="">1000 RSD</button></div><div class="coffee-qr"><div class="coffee-qrv" data-a="200" hidden><svg role="img" aria-label="IPS QR kod 200 RSD" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="M4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM18 4h1v1h-1zM20 4h1v1h-1zM21 4h1v1h-1zM23 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM36 4h1v1h-1zM38 4h1v1h-1zM39 4h1v1h-1zM40 4h1v1h-1zM41 4h1v1h-1zM42 4h1v1h-1zM43 4h1v1h-1zM44 4h1v1h-1zM4 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM17 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM24 5h1v1h-1zM27 5h1v1h-1zM29 5h1v1h-1zM33 5h1v1h-1zM36 5h1v1h-1zM38 5h1v1h-1zM44 5h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM17 6h1v1h-1zM18 6h1v1h-1zM19 6h1v1h-1zM21 6h1v1h-1zM23 6h1v1h-1zM28 6h1v1h-1zM32 6h1v1h-1zM34 6h1v1h-1zM38 6h1v1h-1zM40 6h1v1h-1zM41 6h1v1h-1zM42 6h1v1h-1zM44 6h1v1h-1zM4 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM18 7h1v1h-1zM19 7h1v1h-1zM23 7h1v1h-1zM25 7h1v1h-1zM27 7h1v1h-1zM28 7h1v1h-1zM30 7h1v1h-1zM31 7h1v1h-1zM34 7h1v1h-1zM35 7h1v1h-1zM38 7h1v1h-1zM40 7h1v1h-1zM41 7h1v1h-1zM42 7h1v1h-1zM44 7h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM13 8h1v1h-1zM19 8h1v1h-1zM21 8h1v1h-1zM24 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM31 8h1v1h-1zM32 8h1v1h-1zM33 8h1v1h-1zM38 8h1v1h-1zM40 8h1v1h-1zM41 8h1v1h-1zM42 8h1v1h-1zM44 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM16 9h1v1h-1zM18 9h1v1h-1zM20 9h1v1h-1zM23 9h1v1h-1zM24 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM35 9h1v1h-1zM38 9h1v1h-1zM44 9h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM32 10h1v1h-1zM34 10h1v1h-1zM36 10h1v1h-1zM38 10h1v1h-1zM39 10h1v1h-1zM40 10h1v1h-1zM41 10h1v1h-1zM42 10h1v1h-1zM43 10h1v1h-1zM44 10h1v1h-1zM12 11h1v1h-1zM13 11h1v1h-1zM14 11h1v1h-1zM17 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM21 11h1v1h-1zM23 11h1v1h-1zM26 11h1v1h-1zM27 11h1v1h-1zM30 11h1v1h-1zM32 11h1v1h-1zM33 11h1v1h-1zM34 11h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM13 12h1v1h-1zM15 12h1v1h-1zM16 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM21 12h1v1h-1zM23 12h1v1h-1zM24 12h1v1h-1zM25 12h1v1h-1zM26 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM30 12h1v1h-1zM33 12h1v1h-1zM34 12h1v1h-1zM36 12h1v1h-1zM38 12h1v1h-1zM41 12h1v1h-1zM43 12h1v1h-1zM44 12h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM6 13h1v1h-1zM8 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM17 13h1v1h-1zM19 13h1v1h-1zM20 13h1v1h-1zM21 13h1v1h-1zM23 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM28 13h1v1h-1zM29 13h1v1h-1zM30 13h1v1h-1zM32 13h1v1h-1zM33 13h1v1h-1zM35 13h1v1h-1zM37 13h1v1h-1zM38 13h1v1h-1zM39 13h1v1h-1zM40 13h1v1h-1zM42 13h1v1h-1zM43 13h1v1h-1zM7 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM21 14h1v1h-1zM22 14h1v1h-1zM24 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM32 14h1v1h-1zM34 14h1v1h-1zM36 14h1v1h-1zM41 14h1v1h-1zM43 14h1v1h-1zM4 15h1v1h-1zM5 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM11 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM17 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM20 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM29 15h1v1h-1zM32 15h1v1h-1zM35 15h1v1h-1zM37 15h1v1h-1zM38 15h1v1h-1zM41 15h1v1h-1zM4 16h1v1h-1zM7 16h1v1h-1zM9 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM20 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM26 16h1v1h-1zM28 16h1v1h-1zM29 16h1v1h-1zM30 16h1v1h-1zM31 16h1v1h-1zM32 16h1v1h-1zM33 16h1v1h-1zM34 16h1v1h-1zM39 16h1v1h-1zM41 16h1v1h-1zM42 16h1v1h-1zM43 16h1v1h-1zM44 16h1v1h-1zM7 17h1v1h-1zM9 17h1v1h-1zM11 17h1v1h-1zM13 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM24 17h1v1h-1zM27 17h1v1h-1zM28 17h1v1h-1zM30 17h1v1h-1zM33 17h1v1h-1zM34 17h1v1h-1zM35 17h1v1h-1zM38 17h1v1h-1zM39 17h1v1h-1zM41 17h1v1h-1zM42 17h1v1h-1zM44 17h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM7 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM12 18h1v1h-1zM13 18h1v1h-1zM17 18h1v1h-1zM19 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM29 18h1v1h-1zM33 18h1v1h-1zM35 18h1v1h-1zM37 18h1v1h-1zM41 18h1v1h-1zM42 18h1v1h-1zM43 18h1v1h-1zM44 18h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM11 19h1v1h-1zM13 19h1v1h-1zM16 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM25 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM31 19h1v1h-1zM34 19h1v1h-1zM35 19h1v1h-1zM37 19h1v1h-1zM40 19h1v1h-1zM4 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM17 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM22 20h1v1h-1zM26 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM30 20h1v1h-1zM32 20h1v1h-1zM33 20h1v1h-1zM34 20h1v1h-1zM35 20h1v1h-1zM37 20h1v1h-1zM40 20h1v1h-1zM41 20h1v1h-1zM43 20h1v1h-1zM5 21h1v1h-1zM8 21h1v1h-1zM11 21h1v1h-1zM13 21h1v1h-1zM14 21h1v1h-1zM19 21h1v1h-1zM22 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM29 21h1v1h-1zM31 21h1v1h-1zM32 21h1v1h-1zM33 21h1v1h-1zM34 21h1v1h-1zM37 21h1v1h-1zM38 21h1v1h-1zM39 21h1v1h-1zM42 21h1v1h-1zM43 21h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM10 22h1v1h-1zM13 22h1v1h-1zM14 22h1v1h-1zM15 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM26 22h1v1h-1zM28 22h1v1h-1zM31 22h1v1h-1zM33 22h1v1h-1zM36 22h1v1h-1zM37 22h1v1h-1zM41 22h1v1h-1zM42 22h1v1h-1zM43 22h1v1h-1zM4 23h1v1h-1zM6 23h1v1h-1zM7 23h1v1h-1zM8 23h1v1h-1zM9 23h1v1h-1zM11 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM21 23h1v1h-1zM22 23h1v1h-1zM23 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM27 23h1v1h-1zM31 23h1v1h-1zM36 23h1v1h-1zM37 23h1v1h-1zM39 23h1v1h-1zM41 23h1v1h-1zM42 23h1v1h-1zM4 24h1v1h-1zM5 24h1v1h-1zM7 24h1v1h-1zM10 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM19 24h1v1h-1zM23 24h1v1h-1zM29 24h1v1h-1zM32 24h1v1h-1zM34 24h1v1h-1zM36 24h1v1h-1zM38 24h1v1h-1zM40 24h1v1h-1zM41 24h1v1h-1zM42 24h1v1h-1zM44 24h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM7 25h1v1h-1zM8 25h1v1h-1zM12 25h1v1h-1zM14 25h1v1h-1zM16 25h1v1h-1zM17 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM25 25h1v1h-1zM27 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM33 25h1v1h-1zM34 25h1v1h-1zM35 25h1v1h-1zM36 25h1v1h-1zM38 25h1v1h-1zM39 25h1v1h-1zM40 25h1v1h-1zM41 25h1v1h-1zM43 25h1v1h-1zM4 26h1v1h-1zM8 26h1v1h-1zM10 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM14 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM27 26h1v1h-1zM28 26h1v1h-1zM29 26h1v1h-1zM30 26h1v1h-1zM32 26h1v1h-1zM33 26h1v1h-1zM34 26h1v1h-1zM37 26h1v1h-1zM39 26h1v1h-1zM40 26h1v1h-1zM42 26h1v1h-1zM43 26h1v1h-1zM5 27h1v1h-1zM7 27h1v1h-1zM8 27h1v1h-1zM9 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM17 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM26 27h1v1h-1zM27 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM38 27h1v1h-1zM39 27h1v1h-1zM40 27h1v1h-1zM43 27h1v1h-1zM44 27h1v1h-1zM4 28h1v1h-1zM7 28h1v1h-1zM9 28h1v1h-1zM10 28h1v1h-1zM17 28h1v1h-1zM19 28h1v1h-1zM20 28h1v1h-1zM21 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM27 28h1v1h-1zM29 28h1v1h-1zM32 28h1v1h-1zM36 28h1v1h-1zM42 28h1v1h-1zM43 28h1v1h-1zM44 28h1v1h-1zM4 29h1v1h-1zM5 29h1v1h-1zM6 29h1v1h-1zM12 29h1v1h-1zM13 29h1v1h-1zM14 29h1v1h-1zM16 29h1v1h-1zM22 29h1v1h-1zM23 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM26 29h1v1h-1zM29 29h1v1h-1zM31 29h1v1h-1zM35 29h1v1h-1zM36 29h1v1h-1zM37 29h1v1h-1zM38 29h1v1h-1zM43 29h1v1h-1zM44 29h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM9 30h1v1h-1zM10 30h1v1h-1zM12 30h1v1h-1zM13 30h1v1h-1zM14 30h1v1h-1zM15 30h1v1h-1zM18 30h1v1h-1zM19 30h1v1h-1zM20 30h1v1h-1zM21 30h1v1h-1zM23 30h1v1h-1zM28 30h1v1h-1zM32 30h1v1h-1zM33 30h1v1h-1zM35 30h1v1h-1zM38 30h1v1h-1zM40 30h1v1h-1zM41 30h1v1h-1zM42 30h1v1h-1zM44 30h1v1h-1zM5 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM12 31h1v1h-1zM15 31h1v1h-1zM17 31h1v1h-1zM22 31h1v1h-1zM25 31h1v1h-1zM28 31h1v1h-1zM33 31h1v1h-1zM34 31h1v1h-1zM35 31h1v1h-1zM38 31h1v1h-1zM40 31h1v1h-1zM41 31h1v1h-1zM44 31h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM8 32h1v1h-1zM10 32h1v1h-1zM11 32h1v1h-1zM13 32h1v1h-1zM14 32h1v1h-1zM15 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM21 32h1v1h-1zM22 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM26 32h1v1h-1zM27 32h1v1h-1zM28 32h1v1h-1zM29 32h1v1h-1zM31 32h1v1h-1zM33 32h1v1h-1zM34 32h1v1h-1zM35 32h1v1h-1zM36 32h1v1h-1zM37 32h1v1h-1zM40 32h1v1h-1zM41 32h1v1h-1zM42 32h1v1h-1zM5 33h1v1h-1zM6 33h1v1h-1zM9 33h1v1h-1zM11 33h1v1h-1zM15 33h1v1h-1zM16 33h1v1h-1zM17 33h1v1h-1zM21 33h1v1h-1zM23 33h1v1h-1zM24 33h1v1h-1zM26 33h1v1h-1zM36 33h1v1h-1zM41 33h1v1h-1zM42 33h1v1h-1zM4 34h1v1h-1zM6 34h1v1h-1zM7 34h1v1h-1zM9 34h1v1h-1zM10 34h1v1h-1zM11 34h1v1h-1zM12 34h1v1h-1zM15 34h1v1h-1zM16 34h1v1h-1zM17 34h1v1h-1zM23 34h1v1h-1zM26 34h1v1h-1zM30 34h1v1h-1zM33 34h1v1h-1zM34 34h1v1h-1zM36 34h1v1h-1zM39 34h1v1h-1zM40 34h1v1h-1zM6 35h1v1h-1zM7 35h1v1h-1zM8 35h1v1h-1zM9 35h1v1h-1zM13 35h1v1h-1zM16 35h1v1h-1zM18 35h1v1h-1zM19 35h1v1h-1zM21 35h1v1h-1zM23 35h1v1h-1zM27 35h1v1h-1zM30 35h1v1h-1zM31 35h1v1h-1zM32 35h1v1h-1zM33 35h1v1h-1zM34 35h1v1h-1zM36 35h1v1h-1zM38 35h1v1h-1zM39 35h1v1h-1zM42 35h1v1h-1zM44 35h1v1h-1zM5 36h1v1h-1zM7 36h1v1h-1zM9 36h1v1h-1zM10 36h1v1h-1zM12 36h1v1h-1zM13 36h1v1h-1zM14 36h1v1h-1zM15 36h1v1h-1zM20 36h1v1h-1zM22 36h1v1h-1zM24 36h1v1h-1zM25 36h1v1h-1zM26 36h1v1h-1zM28 36h1v1h-1zM31 36h1v1h-1zM34 36h1v1h-1zM36 36h1v1h-1zM37 36h1v1h-1zM38 36h1v1h-1zM39 36h1v1h-1zM40 36h1v1h-1zM42 36h1v1h-1zM44 36h1v1h-1zM12 37h1v1h-1zM17 37h1v1h-1zM20 37h1v1h-1zM21 37h1v1h-1zM23 37h1v1h-1zM25 37h1v1h-1zM26 37h1v1h-1zM27 37h1v1h-1zM28 37h1v1h-1zM29 37h1v1h-1zM30 37h1v1h-1zM34 37h1v1h-1zM36 37h1v1h-1zM40 37h1v1h-1zM41 37h1v1h-1zM44 37h1v1h-1zM4 38h1v1h-1zM5 38h1v1h-1zM6 38h1v1h-1zM7 38h1v1h-1zM8 38h1v1h-1zM9 38h1v1h-1zM10 38h1v1h-1zM12 38h1v1h-1zM16 38h1v1h-1zM20 38h1v1h-1zM22 38h1v1h-1zM24 38h1v1h-1zM27 38h1v1h-1zM29 38h1v1h-1zM33 38h1v1h-1zM36 38h1v1h-1zM38 38h1v1h-1zM40 38h1v1h-1zM41 38h1v1h-1zM4 39h1v1h-1zM10 39h1v1h-1zM12 39h1v1h-1zM15 39h1v1h-1zM16 39h1v1h-1zM18 39h1v1h-1zM21 39h1v1h-1zM34 39h1v1h-1zM36 39h1v1h-1zM40 39h1v1h-1zM44 39h1v1h-1zM4 40h1v1h-1zM6 40h1v1h-1zM7 40h1v1h-1zM8 40h1v1h-1zM10 40h1v1h-1zM13 40h1v1h-1zM18 40h1v1h-1zM19 40h1v1h-1zM20 40h1v1h-1zM23 40h1v1h-1zM25 40h1v1h-1zM28 40h1v1h-1zM30 40h1v1h-1zM31 40h1v1h-1zM32 40h1v1h-1zM34 40h1v1h-1zM36 40h1v1h-1zM37 40h1v1h-1zM38 40h1v1h-1zM39 40h1v1h-1zM40 40h1v1h-1zM41 40h1v1h-1zM42 40h1v1h-1zM43 40h1v1h-1zM4 41h1v1h-1zM6 41h1v1h-1zM7 41h1v1h-1zM8 41h1v1h-1zM10 41h1v1h-1zM12 41h1v1h-1zM13 41h1v1h-1zM14 41h1v1h-1zM15 41h1v1h-1zM18 41h1v1h-1zM20 41h1v1h-1zM21 41h1v1h-1zM26 41h1v1h-1zM28 41h1v1h-1zM29 41h1v1h-1zM30 41h1v1h-1zM31 41h1v1h-1zM33 41h1v1h-1zM34 41h1v1h-1zM36 41h1v1h-1zM41 41h1v1h-1zM43 41h1v1h-1zM4 42h1v1h-1zM6 42h1v1h-1zM7 42h1v1h-1zM8 42h1v1h-1zM10 42h1v1h-1zM12 42h1v1h-1zM13 42h1v1h-1zM15 42h1v1h-1zM18 42h1v1h-1zM20 42h1v1h-1zM22 42h1v1h-1zM24 42h1v1h-1zM26 42h1v1h-1zM28 42h1v1h-1zM31 42h1v1h-1zM33 42h1v1h-1zM36 42h1v1h-1zM37 42h1v1h-1zM39 42h1v1h-1zM42 42h1v1h-1zM43 42h1v1h-1zM44 42h1v1h-1zM4 43h1v1h-1zM10 43h1v1h-1zM14 43h1v1h-1zM15 43h1v1h-1zM19 43h1v1h-1zM21 43h1v1h-1zM22 43h1v1h-1zM25 43h1v1h-1zM27 43h1v1h-1zM28 43h1v1h-1zM31 43h1v1h-1zM32 43h1v1h-1zM35 43h1v1h-1zM36 43h1v1h-1zM40 43h1v1h-1zM41 43h1v1h-1zM43 43h1v1h-1zM4 44h1v1h-1zM5 44h1v1h-1zM6 44h1v1h-1zM7 44h1v1h-1zM8 44h1v1h-1zM9 44h1v1h-1zM10 44h1v1h-1zM12 44h1v1h-1zM14 44h1v1h-1zM15 44h1v1h-1zM17 44h1v1h-1zM18 44h1v1h-1zM19 44h1v1h-1zM23 44h1v1h-1zM25 44h1v1h-1zM28 44h1v1h-1zM29 44h1v1h-1zM30 44h1v1h-1zM32 44h1v1h-1zM36 44h1v1h-1zM39 44h1v1h-1zM43 44h1v1h-1z"/></svg></div><div class="coffee-qrv" data-a="500"><svg role="img" aria-label="IPS QR kod 500 RSD" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="M4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM16 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM20 4h1v1h-1zM21 4h1v1h-1zM23 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM36 4h1v1h-1zM38 4h1v1h-1zM39 4h1v1h-1zM40 4h1v1h-1zM41 4h1v1h-1zM42 4h1v1h-1zM43 4h1v1h-1zM44 4h1v1h-1zM4 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM17 5h1v1h-1zM18 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM24 5h1v1h-1zM27 5h1v1h-1zM29 5h1v1h-1zM33 5h1v1h-1zM36 5h1v1h-1zM38 5h1v1h-1zM44 5h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM17 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM21 6h1v1h-1zM23 6h1v1h-1zM28 6h1v1h-1zM32 6h1v1h-1zM34 6h1v1h-1zM38 6h1v1h-1zM40 6h1v1h-1zM41 6h1v1h-1zM42 6h1v1h-1zM44 6h1v1h-1zM4 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM18 7h1v1h-1zM19 7h1v1h-1zM23 7h1v1h-1zM25 7h1v1h-1zM27 7h1v1h-1zM28 7h1v1h-1zM30 7h1v1h-1zM31 7h1v1h-1zM34 7h1v1h-1zM35 7h1v1h-1zM38 7h1v1h-1zM40 7h1v1h-1zM41 7h1v1h-1zM42 7h1v1h-1zM44 7h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM13 8h1v1h-1zM19 8h1v1h-1zM21 8h1v1h-1zM24 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM31 8h1v1h-1zM32 8h1v1h-1zM33 8h1v1h-1zM38 8h1v1h-1zM40 8h1v1h-1zM41 8h1v1h-1zM42 8h1v1h-1zM44 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM16 9h1v1h-1zM18 9h1v1h-1zM20 9h1v1h-1zM23 9h1v1h-1zM24 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM35 9h1v1h-1zM38 9h1v1h-1zM44 9h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM32 10h1v1h-1zM34 10h1v1h-1zM36 10h1v1h-1zM38 10h1v1h-1zM39 10h1v1h-1zM40 10h1v1h-1zM41 10h1v1h-1zM42 10h1v1h-1zM43 10h1v1h-1zM44 10h1v1h-1zM12 11h1v1h-1zM13 11h1v1h-1zM14 11h1v1h-1zM17 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM21 11h1v1h-1zM23 11h1v1h-1zM26 11h1v1h-1zM27 11h1v1h-1zM30 11h1v1h-1zM32 11h1v1h-1zM33 11h1v1h-1zM34 11h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM13 12h1v1h-1zM15 12h1v1h-1zM16 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM21 12h1v1h-1zM23 12h1v1h-1zM24 12h1v1h-1zM25 12h1v1h-1zM26 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM30 12h1v1h-1zM33 12h1v1h-1zM34 12h1v1h-1zM36 12h1v1h-1zM38 12h1v1h-1zM41 12h1v1h-1zM43 12h1v1h-1zM44 12h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM17 13h1v1h-1zM19 13h1v1h-1zM20 13h1v1h-1zM21 13h1v1h-1zM23 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM28 13h1v1h-1zM29 13h1v1h-1zM30 13h1v1h-1zM32 13h1v1h-1zM33 13h1v1h-1zM35 13h1v1h-1zM37 13h1v1h-1zM38 13h1v1h-1zM39 13h1v1h-1zM40 13h1v1h-1zM42 13h1v1h-1zM43 13h1v1h-1zM6 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM21 14h1v1h-1zM22 14h1v1h-1zM24 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM32 14h1v1h-1zM34 14h1v1h-1zM36 14h1v1h-1zM41 14h1v1h-1zM43 14h1v1h-1zM4 15h1v1h-1zM5 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM11 15h1v1h-1zM12 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM17 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM20 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM29 15h1v1h-1zM32 15h1v1h-1zM35 15h1v1h-1zM37 15h1v1h-1zM38 15h1v1h-1zM41 15h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM9 16h1v1h-1zM10 16h1v1h-1zM11 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM20 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM26 16h1v1h-1zM28 16h1v1h-1zM29 16h1v1h-1zM30 16h1v1h-1zM31 16h1v1h-1zM32 16h1v1h-1zM33 16h1v1h-1zM34 16h1v1h-1zM39 16h1v1h-1zM41 16h1v1h-1zM42 16h1v1h-1zM43 16h1v1h-1zM44 16h1v1h-1zM7 17h1v1h-1zM9 17h1v1h-1zM11 17h1v1h-1zM17 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM24 17h1v1h-1zM27 17h1v1h-1zM28 17h1v1h-1zM30 17h1v1h-1zM33 17h1v1h-1zM34 17h1v1h-1zM35 17h1v1h-1zM38 17h1v1h-1zM39 17h1v1h-1zM41 17h1v1h-1zM42 17h1v1h-1zM44 17h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM7 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM12 18h1v1h-1zM17 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM29 18h1v1h-1zM33 18h1v1h-1zM35 18h1v1h-1zM37 18h1v1h-1zM41 18h1v1h-1zM42 18h1v1h-1zM43 18h1v1h-1zM44 18h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM11 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM25 19h1v1h-1zM26 19h1v1h-1zM27 19h1v1h-1zM31 19h1v1h-1zM34 19h1v1h-1zM35 19h1v1h-1zM37 19h1v1h-1zM40 19h1v1h-1zM4 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM17 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM22 20h1v1h-1zM26 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM30 20h1v1h-1zM32 20h1v1h-1zM33 20h1v1h-1zM34 20h1v1h-1zM35 20h1v1h-1zM37 20h1v1h-1zM40 20h1v1h-1zM41 20h1v1h-1zM43 20h1v1h-1zM5 21h1v1h-1zM8 21h1v1h-1zM11 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM22 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM29 21h1v1h-1zM31 21h1v1h-1zM32 21h1v1h-1zM33 21h1v1h-1zM34 21h1v1h-1zM37 21h1v1h-1zM38 21h1v1h-1zM39 21h1v1h-1zM42 21h1v1h-1zM43 21h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM10 22h1v1h-1zM13 22h1v1h-1zM14 22h1v1h-1zM15 22h1v1h-1zM22 22h1v1h-1zM26 22h1v1h-1zM28 22h1v1h-1zM31 22h1v1h-1zM32 22h1v1h-1zM33 22h1v1h-1zM36 22h1v1h-1zM37 22h1v1h-1zM41 22h1v1h-1zM42 22h1v1h-1zM43 22h1v1h-1zM4 23h1v1h-1zM6 23h1v1h-1zM7 23h1v1h-1zM8 23h1v1h-1zM9 23h1v1h-1zM11 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM21 23h1v1h-1zM22 23h1v1h-1zM23 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM27 23h1v1h-1zM32 23h1v1h-1zM36 23h1v1h-1zM37 23h1v1h-1zM39 23h1v1h-1zM41 23h1v1h-1zM42 23h1v1h-1zM4 24h1v1h-1zM5 24h1v1h-1zM7 24h1v1h-1zM10 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM23 24h1v1h-1zM29 24h1v1h-1zM32 24h1v1h-1zM34 24h1v1h-1zM36 24h1v1h-1zM38 24h1v1h-1zM40 24h1v1h-1zM41 24h1v1h-1zM42 24h1v1h-1zM44 24h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM7 25h1v1h-1zM8 25h1v1h-1zM12 25h1v1h-1zM14 25h1v1h-1zM16 25h1v1h-1zM17 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM25 25h1v1h-1zM27 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM33 25h1v1h-1zM34 25h1v1h-1zM35 25h1v1h-1zM36 25h1v1h-1zM38 25h1v1h-1zM39 25h1v1h-1zM40 25h1v1h-1zM41 25h1v1h-1zM43 25h1v1h-1zM8 26h1v1h-1zM10 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM14 26h1v1h-1zM20 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM27 26h1v1h-1zM28 26h1v1h-1zM29 26h1v1h-1zM30 26h1v1h-1zM32 26h1v1h-1zM33 26h1v1h-1zM34 26h1v1h-1zM37 26h1v1h-1zM39 26h1v1h-1zM40 26h1v1h-1zM42 26h1v1h-1zM43 26h1v1h-1zM7 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM17 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM26 27h1v1h-1zM27 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM38 27h1v1h-1zM39 27h1v1h-1zM40 27h1v1h-1zM43 27h1v1h-1zM44 27h1v1h-1zM9 28h1v1h-1zM10 28h1v1h-1zM12 28h1v1h-1zM17 28h1v1h-1zM19 28h1v1h-1zM20 28h1v1h-1zM21 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM27 28h1v1h-1zM29 28h1v1h-1zM32 28h1v1h-1zM36 28h1v1h-1zM42 28h1v1h-1zM43 28h1v1h-1zM44 28h1v1h-1zM4 29h1v1h-1zM5 29h1v1h-1zM6 29h1v1h-1zM7 29h1v1h-1zM9 29h1v1h-1zM11 29h1v1h-1zM12 29h1v1h-1zM13 29h1v1h-1zM14 29h1v1h-1zM16 29h1v1h-1zM22 29h1v1h-1zM23 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM26 29h1v1h-1zM29 29h1v1h-1zM31 29h1v1h-1zM35 29h1v1h-1zM36 29h1v1h-1zM37 29h1v1h-1zM38 29h1v1h-1zM43 29h1v1h-1zM44 29h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM9 30h1v1h-1zM10 30h1v1h-1zM11 30h1v1h-1zM13 30h1v1h-1zM14 30h1v1h-1zM15 30h1v1h-1zM18 30h1v1h-1zM19 30h1v1h-1zM20 30h1v1h-1zM21 30h1v1h-1zM23 30h1v1h-1zM28 30h1v1h-1zM32 30h1v1h-1zM33 30h1v1h-1zM35 30h1v1h-1zM38 30h1v1h-1zM40 30h1v1h-1zM41 30h1v1h-1zM42 30h1v1h-1zM44 30h1v1h-1zM5 31h1v1h-1zM6 31h1v1h-1zM7 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM12 31h1v1h-1zM15 31h1v1h-1zM17 31h1v1h-1zM22 31h1v1h-1zM25 31h1v1h-1zM28 31h1v1h-1zM33 31h1v1h-1zM34 31h1v1h-1zM35 31h1v1h-1zM38 31h1v1h-1zM40 31h1v1h-1zM41 31h1v1h-1zM44 31h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM10 32h1v1h-1zM11 32h1v1h-1zM13 32h1v1h-1zM14 32h1v1h-1zM15 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM21 32h1v1h-1zM22 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM26 32h1v1h-1zM27 32h1v1h-1zM28 32h1v1h-1zM29 32h1v1h-1zM31 32h1v1h-1zM33 32h1v1h-1zM34 32h1v1h-1zM35 32h1v1h-1zM36 32h1v1h-1zM37 32h1v1h-1zM40 32h1v1h-1zM41 32h1v1h-1zM42 32h1v1h-1zM5 33h1v1h-1zM6 33h1v1h-1zM9 33h1v1h-1zM11 33h1v1h-1zM15 33h1v1h-1zM16 33h1v1h-1zM17 33h1v1h-1zM21 33h1v1h-1zM23 33h1v1h-1zM24 33h1v1h-1zM26 33h1v1h-1zM36 33h1v1h-1zM41 33h1v1h-1zM42 33h1v1h-1zM4 34h1v1h-1zM6 34h1v1h-1zM7 34h1v1h-1zM9 34h1v1h-1zM10 34h1v1h-1zM11 34h1v1h-1zM12 34h1v1h-1zM13 34h1v1h-1zM14 34h1v1h-1zM15 34h1v1h-1zM16 34h1v1h-1zM18 34h1v1h-1zM23 34h1v1h-1zM26 34h1v1h-1zM30 34h1v1h-1zM33 34h1v1h-1zM34 34h1v1h-1zM36 34h1v1h-1zM39 34h1v1h-1zM40 34h1v1h-1zM6 35h1v1h-1zM7 35h1v1h-1zM8 35h1v1h-1zM9 35h1v1h-1zM13 35h1v1h-1zM16 35h1v1h-1zM18 35h1v1h-1zM19 35h1v1h-1zM21 35h1v1h-1zM23 35h1v1h-1zM27 35h1v1h-1zM30 35h1v1h-1zM31 35h1v1h-1zM32 35h1v1h-1zM33 35h1v1h-1zM34 35h1v1h-1zM36 35h1v1h-1zM38 35h1v1h-1zM39 35h1v1h-1zM42 35h1v1h-1zM44 35h1v1h-1zM5 36h1v1h-1zM7 36h1v1h-1zM9 36h1v1h-1zM10 36h1v1h-1zM12 36h1v1h-1zM15 36h1v1h-1zM17 36h1v1h-1zM18 36h1v1h-1zM20 36h1v1h-1zM22 36h1v1h-1zM24 36h1v1h-1zM25 36h1v1h-1zM26 36h1v1h-1zM28 36h1v1h-1zM31 36h1v1h-1zM34 36h1v1h-1zM36 36h1v1h-1zM37 36h1v1h-1zM38 36h1v1h-1zM39 36h1v1h-1zM40 36h1v1h-1zM42 36h1v1h-1zM44 36h1v1h-1zM12 37h1v1h-1zM16 37h1v1h-1zM17 37h1v1h-1zM18 37h1v1h-1zM20 37h1v1h-1zM21 37h1v1h-1zM23 37h1v1h-1zM25 37h1v1h-1zM26 37h1v1h-1zM27 37h1v1h-1zM28 37h1v1h-1zM29 37h1v1h-1zM30 37h1v1h-1zM34 37h1v1h-1zM36 37h1v1h-1zM40 37h1v1h-1zM41 37h1v1h-1zM44 37h1v1h-1zM4 38h1v1h-1zM5 38h1v1h-1zM6 38h1v1h-1zM7 38h1v1h-1zM8 38h1v1h-1zM9 38h1v1h-1zM10 38h1v1h-1zM12 38h1v1h-1zM15 38h1v1h-1zM20 38h1v1h-1zM22 38h1v1h-1zM24 38h1v1h-1zM27 38h1v1h-1zM29 38h1v1h-1zM33 38h1v1h-1zM36 38h1v1h-1zM38 38h1v1h-1zM40 38h1v1h-1zM41 38h1v1h-1zM4 39h1v1h-1zM10 39h1v1h-1zM12 39h1v1h-1zM18 39h1v1h-1zM20 39h1v1h-1zM21 39h1v1h-1zM34 39h1v1h-1zM36 39h1v1h-1zM40 39h1v1h-1zM44 39h1v1h-1zM4 40h1v1h-1zM6 40h1v1h-1zM7 40h1v1h-1zM8 40h1v1h-1zM10 40h1v1h-1zM13 40h1v1h-1zM18 40h1v1h-1zM20 40h1v1h-1zM23 40h1v1h-1zM25 40h1v1h-1zM28 40h1v1h-1zM30 40h1v1h-1zM31 40h1v1h-1zM32 40h1v1h-1zM34 40h1v1h-1zM36 40h1v1h-1zM37 40h1v1h-1zM38 40h1v1h-1zM39 40h1v1h-1zM40 40h1v1h-1zM41 40h1v1h-1zM42 40h1v1h-1zM43 40h1v1h-1zM4 41h1v1h-1zM6 41h1v1h-1zM7 41h1v1h-1zM8 41h1v1h-1zM10 41h1v1h-1zM12 41h1v1h-1zM13 41h1v1h-1zM14 41h1v1h-1zM15 41h1v1h-1zM18 41h1v1h-1zM20 41h1v1h-1zM21 41h1v1h-1zM26 41h1v1h-1zM28 41h1v1h-1zM29 41h1v1h-1zM30 41h1v1h-1zM31 41h1v1h-1zM33 41h1v1h-1zM34 41h1v1h-1zM36 41h1v1h-1zM41 41h1v1h-1zM43 41h1v1h-1zM4 42h1v1h-1zM6 42h1v1h-1zM7 42h1v1h-1zM8 42h1v1h-1zM10 42h1v1h-1zM12 42h1v1h-1zM13 42h1v1h-1zM15 42h1v1h-1zM18 42h1v1h-1zM20 42h1v1h-1zM22 42h1v1h-1zM24 42h1v1h-1zM26 42h1v1h-1zM28 42h1v1h-1zM31 42h1v1h-1zM33 42h1v1h-1zM36 42h1v1h-1zM37 42h1v1h-1zM39 42h1v1h-1zM42 42h1v1h-1zM43 42h1v1h-1zM44 42h1v1h-1zM4 43h1v1h-1zM10 43h1v1h-1zM14 43h1v1h-1zM15 43h1v1h-1zM19 43h1v1h-1zM21 43h1v1h-1zM22 43h1v1h-1zM25 43h1v1h-1zM27 43h1v1h-1zM28 43h1v1h-1zM31 43h1v1h-1zM32 43h1v1h-1zM35 43h1v1h-1zM36 43h1v1h-1zM40 43h1v1h-1zM41 43h1v1h-1zM43 43h1v1h-1zM4 44h1v1h-1zM5 44h1v1h-1zM6 44h1v1h-1zM7 44h1v1h-1zM8 44h1v1h-1zM9 44h1v1h-1zM10 44h1v1h-1zM12 44h1v1h-1zM14 44h1v1h-1zM15 44h1v1h-1zM17 44h1v1h-1zM18 44h1v1h-1zM19 44h1v1h-1zM23 44h1v1h-1zM25 44h1v1h-1zM28 44h1v1h-1zM29 44h1v1h-1zM30 44h1v1h-1zM32 44h1v1h-1zM36 44h1v1h-1zM39 44h1v1h-1zM43 44h1v1h-1z"/></svg></div><div class="coffee-qrv" data-a="1000" hidden><svg role="img" aria-label="IPS QR kod 1000 RSD" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="M4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM21 4h1v1h-1zM24 4h1v1h-1zM29 4h1v1h-1zM32 4h1v1h-1zM35 4h1v1h-1zM38 4h1v1h-1zM39 4h1v1h-1zM40 4h1v1h-1zM41 4h1v1h-1zM42 4h1v1h-1zM43 4h1v1h-1zM44 4h1v1h-1zM4 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM15 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM25 5h1v1h-1zM26 5h1v1h-1zM28 5h1v1h-1zM33 5h1v1h-1zM34 5h1v1h-1zM38 5h1v1h-1zM44 5h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM14 6h1v1h-1zM15 6h1v1h-1zM17 6h1v1h-1zM19 6h1v1h-1zM23 6h1v1h-1zM28 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM34 6h1v1h-1zM35 6h1v1h-1zM38 6h1v1h-1zM40 6h1v1h-1zM41 6h1v1h-1zM42 6h1v1h-1zM44 6h1v1h-1zM4 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM17 7h1v1h-1zM19 7h1v1h-1zM20 7h1v1h-1zM22 7h1v1h-1zM24 7h1v1h-1zM28 7h1v1h-1zM30 7h1v1h-1zM32 7h1v1h-1zM33 7h1v1h-1zM35 7h1v1h-1zM36 7h1v1h-1zM38 7h1v1h-1zM40 7h1v1h-1zM41 7h1v1h-1zM42 7h1v1h-1zM44 7h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM13 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM25 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM32 8h1v1h-1zM34 8h1v1h-1zM36 8h1v1h-1zM38 8h1v1h-1zM40 8h1v1h-1zM41 8h1v1h-1zM42 8h1v1h-1zM44 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM17 9h1v1h-1zM18 9h1v1h-1zM22 9h1v1h-1zM24 9h1v1h-1zM26 9h1v1h-1zM28 9h1v1h-1zM30 9h1v1h-1zM32 9h1v1h-1zM34 9h1v1h-1zM38 9h1v1h-1zM44 9h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM32 10h1v1h-1zM34 10h1v1h-1zM36 10h1v1h-1zM38 10h1v1h-1zM39 10h1v1h-1zM40 10h1v1h-1zM41 10h1v1h-1zM42 10h1v1h-1zM43 10h1v1h-1zM44 10h1v1h-1zM12 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM16 11h1v1h-1zM19 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM26 11h1v1h-1zM28 11h1v1h-1zM32 11h1v1h-1zM36 11h1v1h-1zM4 12h1v1h-1zM10 12h1v1h-1zM12 12h1v1h-1zM13 12h1v1h-1zM15 12h1v1h-1zM16 12h1v1h-1zM20 12h1v1h-1zM21 12h1v1h-1zM22 12h1v1h-1zM24 12h1v1h-1zM30 12h1v1h-1zM31 12h1v1h-1zM32 12h1v1h-1zM33 12h1v1h-1zM35 12h1v1h-1zM36 12h1v1h-1zM37 12h1v1h-1zM38 12h1v1h-1zM41 12h1v1h-1zM42 12h1v1h-1zM43 12h1v1h-1zM6 13h1v1h-1zM7 13h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM18 13h1v1h-1zM21 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM25 13h1v1h-1zM27 13h1v1h-1zM28 13h1v1h-1zM29 13h1v1h-1zM31 13h1v1h-1zM33 13h1v1h-1zM35 13h1v1h-1zM36 13h1v1h-1zM39 13h1v1h-1zM40 13h1v1h-1zM43 13h1v1h-1zM7 14h1v1h-1zM9 14h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM13 14h1v1h-1zM16 14h1v1h-1zM17 14h1v1h-1zM18 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM25 14h1v1h-1zM30 14h1v1h-1zM31 14h1v1h-1zM32 14h1v1h-1zM33 14h1v1h-1zM38 14h1v1h-1zM39 14h1v1h-1zM40 14h1v1h-1zM41 14h1v1h-1zM42 14h1v1h-1zM43 14h1v1h-1zM4 15h1v1h-1zM6 15h1v1h-1zM7 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM26 15h1v1h-1zM28 15h1v1h-1zM34 15h1v1h-1zM38 15h1v1h-1zM40 15h1v1h-1zM43 15h1v1h-1zM44 15h1v1h-1zM4 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM9 16h1v1h-1zM10 16h1v1h-1zM15 16h1v1h-1zM18 16h1v1h-1zM20 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM23 16h1v1h-1zM24 16h1v1h-1zM27 16h1v1h-1zM31 16h1v1h-1zM32 16h1v1h-1zM34 16h1v1h-1zM35 16h1v1h-1zM36 16h1v1h-1zM38 16h1v1h-1zM43 16h1v1h-1zM44 16h1v1h-1zM5 17h1v1h-1zM6 17h1v1h-1zM7 17h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM11 17h1v1h-1zM12 17h1v1h-1zM13 17h1v1h-1zM15 17h1v1h-1zM17 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM22 17h1v1h-1zM24 17h1v1h-1zM25 17h1v1h-1zM28 17h1v1h-1zM32 17h1v1h-1zM35 17h1v1h-1zM36 17h1v1h-1zM38 17h1v1h-1zM40 17h1v1h-1zM41 17h1v1h-1zM44 17h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h1v1h-1zM13 18h1v1h-1zM16 18h1v1h-1zM17 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM20 18h1v1h-1zM22 18h1v1h-1zM23 18h1v1h-1zM25 18h1v1h-1zM26 18h1v1h-1zM33 18h1v1h-1zM34 18h1v1h-1zM36 18h1v1h-1zM38 18h1v1h-1zM40 18h1v1h-1zM42 18h1v1h-1zM4 19h1v1h-1zM5 19h1v1h-1zM6 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM22 19h1v1h-1zM23 19h1v1h-1zM26 19h1v1h-1zM28 19h1v1h-1zM30 19h1v1h-1zM31 19h1v1h-1zM34 19h1v1h-1zM36 19h1v1h-1zM38 19h1v1h-1zM40 19h1v1h-1zM42 19h1v1h-1zM43 19h1v1h-1zM44 19h1v1h-1zM4 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM26 20h1v1h-1zM29 20h1v1h-1zM32 20h1v1h-1zM35 20h1v1h-1zM36 20h1v1h-1zM39 20h1v1h-1zM41 20h1v1h-1zM42 20h1v1h-1zM4 21h1v1h-1zM5 21h1v1h-1zM6 21h1v1h-1zM7 21h1v1h-1zM9 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM16 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM21 21h1v1h-1zM23 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM29 21h1v1h-1zM30 21h1v1h-1zM31 21h1v1h-1zM35 21h1v1h-1zM37 21h1v1h-1zM39 21h1v1h-1zM40 21h1v1h-1zM41 21h1v1h-1zM42 21h1v1h-1zM43 21h1v1h-1zM44 21h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM7 22h1v1h-1zM10 22h1v1h-1zM11 22h1v1h-1zM12 22h1v1h-1zM16 22h1v1h-1zM17 22h1v1h-1zM23 22h1v1h-1zM24 22h1v1h-1zM25 22h1v1h-1zM26 22h1v1h-1zM27 22h1v1h-1zM28 22h1v1h-1zM31 22h1v1h-1zM33 22h1v1h-1zM34 22h1v1h-1zM35 22h1v1h-1zM37 22h1v1h-1zM38 22h1v1h-1zM39 22h1v1h-1zM43 22h1v1h-1zM44 22h1v1h-1zM8 23h1v1h-1zM12 23h1v1h-1zM13 23h1v1h-1zM15 23h1v1h-1zM17 23h1v1h-1zM21 23h1v1h-1zM22 23h1v1h-1zM23 23h1v1h-1zM26 23h1v1h-1zM28 23h1v1h-1zM29 23h1v1h-1zM37 23h1v1h-1zM40 23h1v1h-1zM41 23h1v1h-1zM6 24h1v1h-1zM8 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM16 24h1v1h-1zM18 24h1v1h-1zM19 24h1v1h-1zM20 24h1v1h-1zM23 24h1v1h-1zM25 24h1v1h-1zM28 24h1v1h-1zM30 24h1v1h-1zM31 24h1v1h-1zM34 24h1v1h-1zM35 24h1v1h-1zM36 24h1v1h-1zM37 24h1v1h-1zM42 24h1v1h-1zM43 24h1v1h-1zM4 25h1v1h-1zM7 25h1v1h-1zM14 25h1v1h-1zM16 25h1v1h-1zM22 25h1v1h-1zM24 25h1v1h-1zM27 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM31 25h1v1h-1zM33 25h1v1h-1zM34 25h1v1h-1zM35 25h1v1h-1zM37 25h1v1h-1zM39 25h1v1h-1zM40 25h1v1h-1zM44 25h1v1h-1zM6 26h1v1h-1zM8 26h1v1h-1zM9 26h1v1h-1zM10 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM13 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM19 26h1v1h-1zM20 26h1v1h-1zM22 26h1v1h-1zM23 26h1v1h-1zM25 26h1v1h-1zM29 26h1v1h-1zM31 26h1v1h-1zM32 26h1v1h-1zM36 26h1v1h-1zM39 26h1v1h-1zM42 26h1v1h-1zM4 27h1v1h-1zM5 27h1v1h-1zM6 27h1v1h-1zM7 27h1v1h-1zM8 27h1v1h-1zM9 27h1v1h-1zM11 27h1v1h-1zM13 27h1v1h-1zM15 27h1v1h-1zM17 27h1v1h-1zM18 27h1v1h-1zM22 27h1v1h-1zM24 27h1v1h-1zM27 27h1v1h-1zM32 27h1v1h-1zM34 27h1v1h-1zM35 27h1v1h-1zM39 27h1v1h-1zM41 27h1v1h-1zM44 27h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM7 28h1v1h-1zM10 28h1v1h-1zM11 28h1v1h-1zM12 28h1v1h-1zM14 28h1v1h-1zM15 28h1v1h-1zM16 28h1v1h-1zM17 28h1v1h-1zM19 28h1v1h-1zM20 28h1v1h-1zM22 28h1v1h-1zM23 28h1v1h-1zM26 28h1v1h-1zM30 28h1v1h-1zM33 28h1v1h-1zM35 28h1v1h-1zM38 28h1v1h-1zM39 28h1v1h-1zM41 28h1v1h-1zM42 28h1v1h-1zM43 28h1v1h-1zM4 29h1v1h-1zM5 29h1v1h-1zM8 29h1v1h-1zM11 29h1v1h-1zM12 29h1v1h-1zM13 29h1v1h-1zM16 29h1v1h-1zM20 29h1v1h-1zM21 29h1v1h-1zM23 29h1v1h-1zM25 29h1v1h-1zM26 29h1v1h-1zM27 29h1v1h-1zM28 29h1v1h-1zM29 29h1v1h-1zM30 29h1v1h-1zM31 29h1v1h-1zM33 29h1v1h-1zM34 29h1v1h-1zM35 29h1v1h-1zM37 29h1v1h-1zM38 29h1v1h-1zM39 29h1v1h-1zM40 29h1v1h-1zM42 29h1v1h-1zM43 29h1v1h-1zM4 30h1v1h-1zM5 30h1v1h-1zM8 30h1v1h-1zM10 30h1v1h-1zM11 30h1v1h-1zM16 30h1v1h-1zM17 30h1v1h-1zM18 30h1v1h-1zM21 30h1v1h-1zM22 30h1v1h-1zM25 30h1v1h-1zM26 30h1v1h-1zM29 30h1v1h-1zM31 30h1v1h-1zM33 30h1v1h-1zM34 30h1v1h-1zM37 30h1v1h-1zM42 30h1v1h-1zM6 31h1v1h-1zM7 31h1v1h-1zM11 31h1v1h-1zM12 31h1v1h-1zM13 31h1v1h-1zM14 31h1v1h-1zM17 31h1v1h-1zM18 31h1v1h-1zM19 31h1v1h-1zM22 31h1v1h-1zM24 31h1v1h-1zM26 31h1v1h-1zM28 31h1v1h-1zM30 31h1v1h-1zM31 31h1v1h-1zM32 31h1v1h-1zM33 31h1v1h-1zM34 31h1v1h-1zM35 31h1v1h-1zM36 31h1v1h-1zM37 31h1v1h-1zM38 31h1v1h-1zM40 31h1v1h-1zM41 31h1v1h-1zM42 31h1v1h-1zM44 31h1v1h-1zM7 32h1v1h-1zM8 32h1v1h-1zM10 32h1v1h-1zM12 32h1v1h-1zM14 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM18 32h1v1h-1zM19 32h1v1h-1zM24 32h1v1h-1zM26 32h1v1h-1zM28 32h1v1h-1zM29 32h1v1h-1zM30 32h1v1h-1zM32 32h1v1h-1zM35 32h1v1h-1zM39 32h1v1h-1zM41 32h1v1h-1zM44 32h1v1h-1zM4 33h1v1h-1zM6 33h1v1h-1zM8 33h1v1h-1zM14 33h1v1h-1zM15 33h1v1h-1zM17 33h1v1h-1zM20 33h1v1h-1zM21 33h1v1h-1zM22 33h1v1h-1zM34 33h1v1h-1zM35 33h1v1h-1zM36 33h1v1h-1zM38 33h1v1h-1zM40 33h1v1h-1zM42 33h1v1h-1zM44 33h1v1h-1zM4 34h1v1h-1zM5 34h1v1h-1zM7 34h1v1h-1zM10 34h1v1h-1zM13 34h1v1h-1zM14 34h1v1h-1zM15 34h1v1h-1zM19 34h1v1h-1zM20 34h1v1h-1zM21 34h1v1h-1zM22 34h1v1h-1zM23 34h1v1h-1zM26 34h1v1h-1zM28 34h1v1h-1zM29 34h1v1h-1zM30 34h1v1h-1zM31 34h1v1h-1zM34 34h1v1h-1zM35 34h1v1h-1zM38 34h1v1h-1zM40 34h1v1h-1zM41 34h1v1h-1zM42 34h1v1h-1zM44 34h1v1h-1zM4 35h1v1h-1zM7 35h1v1h-1zM9 35h1v1h-1zM12 35h1v1h-1zM16 35h1v1h-1zM18 35h1v1h-1zM19 35h1v1h-1zM20 35h1v1h-1zM26 35h1v1h-1zM27 35h1v1h-1zM35 35h1v1h-1zM38 35h1v1h-1zM40 35h1v1h-1zM44 35h1v1h-1zM4 36h1v1h-1zM7 36h1v1h-1zM8 36h1v1h-1zM10 36h1v1h-1zM11 36h1v1h-1zM15 36h1v1h-1zM18 36h1v1h-1zM21 36h1v1h-1zM24 36h1v1h-1zM25 36h1v1h-1zM26 36h1v1h-1zM27 36h1v1h-1zM29 36h1v1h-1zM31 36h1v1h-1zM32 36h1v1h-1zM36 36h1v1h-1zM37 36h1v1h-1zM38 36h1v1h-1zM39 36h1v1h-1zM40 36h1v1h-1zM41 36h1v1h-1zM42 36h1v1h-1zM43 36h1v1h-1zM12 37h1v1h-1zM16 37h1v1h-1zM17 37h1v1h-1zM18 37h1v1h-1zM19 37h1v1h-1zM23 37h1v1h-1zM24 37h1v1h-1zM25 37h1v1h-1zM26 37h1v1h-1zM27 37h1v1h-1zM28 37h1v1h-1zM30 37h1v1h-1zM31 37h1v1h-1zM32 37h1v1h-1zM33 37h1v1h-1zM34 37h1v1h-1zM36 37h1v1h-1zM40 37h1v1h-1zM41 37h1v1h-1zM42 37h1v1h-1zM43 37h1v1h-1zM4 38h1v1h-1zM5 38h1v1h-1zM6 38h1v1h-1zM7 38h1v1h-1zM8 38h1v1h-1zM9 38h1v1h-1zM10 38h1v1h-1zM14 38h1v1h-1zM22 38h1v1h-1zM26 38h1v1h-1zM28 38h1v1h-1zM31 38h1v1h-1zM33 38h1v1h-1zM36 38h1v1h-1zM38 38h1v1h-1zM40 38h1v1h-1zM41 38h1v1h-1zM42 38h1v1h-1zM43 38h1v1h-1zM4 39h1v1h-1zM10 39h1v1h-1zM13 39h1v1h-1zM15 39h1v1h-1zM18 39h1v1h-1zM20 39h1v1h-1zM23 39h1v1h-1zM24 39h1v1h-1zM25 39h1v1h-1zM30 39h1v1h-1zM32 39h1v1h-1zM33 39h1v1h-1zM34 39h1v1h-1zM35 39h1v1h-1zM36 39h1v1h-1zM40 39h1v1h-1zM41 39h1v1h-1zM4 40h1v1h-1zM6 40h1v1h-1zM7 40h1v1h-1zM8 40h1v1h-1zM10 40h1v1h-1zM13 40h1v1h-1zM15 40h1v1h-1zM17 40h1v1h-1zM21 40h1v1h-1zM22 40h1v1h-1zM23 40h1v1h-1zM24 40h1v1h-1zM25 40h1v1h-1zM28 40h1v1h-1zM29 40h1v1h-1zM30 40h1v1h-1zM31 40h1v1h-1zM33 40h1v1h-1zM35 40h1v1h-1zM36 40h1v1h-1zM37 40h1v1h-1zM38 40h1v1h-1zM39 40h1v1h-1zM40 40h1v1h-1zM43 40h1v1h-1zM44 40h1v1h-1zM4 41h1v1h-1zM6 41h1v1h-1zM7 41h1v1h-1zM8 41h1v1h-1zM10 41h1v1h-1zM14 41h1v1h-1zM16 41h1v1h-1zM20 41h1v1h-1zM21 41h1v1h-1zM24 41h1v1h-1zM27 41h1v1h-1zM29 41h1v1h-1zM30 41h1v1h-1zM31 41h1v1h-1zM34 41h1v1h-1zM39 41h1v1h-1zM40 41h1v1h-1zM41 41h1v1h-1zM43 41h1v1h-1zM4 42h1v1h-1zM6 42h1v1h-1zM7 42h1v1h-1zM8 42h1v1h-1zM10 42h1v1h-1zM13 42h1v1h-1zM14 42h1v1h-1zM15 42h1v1h-1zM16 42h1v1h-1zM17 42h1v1h-1zM18 42h1v1h-1zM19 42h1v1h-1zM22 42h1v1h-1zM23 42h1v1h-1zM24 42h1v1h-1zM25 42h1v1h-1zM29 42h1v1h-1zM32 42h1v1h-1zM33 42h1v1h-1zM34 42h1v1h-1zM35 42h1v1h-1zM36 42h1v1h-1zM38 42h1v1h-1zM39 42h1v1h-1zM40 42h1v1h-1zM4 43h1v1h-1zM10 43h1v1h-1zM14 43h1v1h-1zM15 43h1v1h-1zM17 43h1v1h-1zM18 43h1v1h-1zM20 43h1v1h-1zM21 43h1v1h-1zM22 43h1v1h-1zM24 43h1v1h-1zM26 43h1v1h-1zM27 43h1v1h-1zM28 43h1v1h-1zM30 43h1v1h-1zM35 43h1v1h-1zM37 43h1v1h-1zM38 43h1v1h-1zM40 43h1v1h-1zM41 43h1v1h-1zM42 43h1v1h-1zM44 43h1v1h-1zM4 44h1v1h-1zM5 44h1v1h-1zM6 44h1v1h-1zM7 44h1v1h-1zM8 44h1v1h-1zM9 44h1v1h-1zM10 44h1v1h-1zM12 44h1v1h-1zM14 44h1v1h-1zM17 44h1v1h-1zM20 44h1v1h-1zM23 44h1v1h-1zM24 44h1v1h-1zM27 44h1v1h-1zM29 44h1v1h-1zM31 44h1v1h-1zM32 44h1v1h-1zM33 44h1v1h-1zM34 44h1v1h-1zM37 44h1v1h-1zM40 44h1v1h-1zM42 44h1v1h-1z"/></svg></div></div><p class="small muted">Izaberi iznos, pa u mobilnoj banci odaberi „IPS skeniraj“ i skeniraj QR kod</p><p>Hvala!</p></div></div>
+<script>(function(){var o=document.getElementById('coffeeOv');function c(){o.classList.remove('open')}window.coffeeOpen=function(){o.classList.add('open')};document.getElementById('coffeeX').onclick=c;o.addEventListener('click',function(e){if(e.target===o)c()});document.addEventListener('keydown',function(e){if(e.key==='Escape')c()});Array.prototype.forEach.call(document.querySelectorAll('.coffee-amts button'),function(b){b.onclick=function(){var a=b.getAttribute('data-a');Array.prototype.forEach.call(document.querySelectorAll('.coffee-amts button'),function(x){x.classList.toggle('on',x===b)});Array.prototype.forEach.call(document.querySelectorAll('.coffee-qrv'),function(v){v.hidden=v.getAttribute('data-a')!==a})}});document.getElementById('coffeeCopy').onclick=function(){var t='115000000006810143',x=this;function ok(){x.textContent='Kopirano \u2713';setTimeout(function(){x.textContent='Kopiraj broj računa'},1800)}try{navigator.clipboard.writeText(t).then(ok,function(){})}catch(e){}}})();</script>
+</body>
+</html>
