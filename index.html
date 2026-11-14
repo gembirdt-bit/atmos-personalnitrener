@@ -131,7 +131,7 @@ a{color:var(--acc)}
 <div id="toast"></div>
 <script>
 'use strict';
-const VER='1.1',KEY='atmosTrener1',APP='Atmos Personalni trener';
+const VER='1.2',KEY='atmosTrener1',APP='Atmos Personalni trener';
 const ACCENTS=['#f0782f','#0f9d78','#3b82f6','#8b5cf6','#e11d48','#eab308'];
 const COLLS=['clients','sessions','measures','packages','templates','exercises'];
 const ST={zak:['Zakazan','📅','var(--p)'],odr:['Održan','✅','var(--ok)'],otk:['Otkazan','🚫','var(--muted)'],ndo:['Nije došao','❌','var(--bad)']};
@@ -339,7 +339,7 @@ function rSettings(){const s=S();let o='';
   o+=`<div class="card"><h3>📲 Instalacija</h3>${instEv?`<button class="btn-p" data-act="install" style="width:100%">Instaliraj aplikaciju</button>`:isStandalone()?'<div class="small muted">Aplikacija je instalirana ✔</div>':`<div class="small muted">Android (Chrome): meni ⋮ → <i>Instaliraj aplikaciju</i>. iPhone (Safari): Deli → <i>Dodaj na početni ekran</i>.</div>`}</div>`;
   o+=`<div class="card"><h3>☕ Podrži autora</h3><div class="small muted" style="margin-bottom:10px">${APP} je besplatna. Ako ti se aplikacija sviđa, možeš da častiš autora kafom.</div><button class="btn-p" style="width:100%" onclick="coffeeOpen()" type="button">☕ Plati mi kafu</button></div>`;
   o+=`<div class="card"><h3>📱 Još Atmos aplikacija</h3><div class="small muted" style="margin-bottom:10px">Atmos Ishrana (kalorije — odlično za klijente), Atmos Dom, Atmos Auto — servisna knjižica, Atmos Dashboard i ostale besplatne aplikacije.</div><button class="btn-p" style="width:100%" data-act="apps">🌐 Otvori Atmos aplikacije</button></div>`;
-  o+=`<div class="card"><h3>ℹ️ O aplikaciji</h3><div class="row sp" style="margin-bottom:8px"><span>Verzija <b>${VER}</b></span><button class="btn-s" data-act="updchk">🔄 Proveri ažuriranje</button></div>
+  o+=`<div class="card"><h3>ℹ️ O aplikaciji</h3><div class="row sp" style="margin-bottom:8px"><span>Verzija <b>${VER}</b></span></div>
    <div class="small muted" style="line-height:1.6">Podaci o klijentima čuvaju se na ovom uređaju i (ako ga povežeš) na tvom Google Drive-u — nigde drugde.<br><a href="privatnost.html" target="_blank" rel="noopener">Politika privatnosti</a> · <a href="uslovi.html" target="_blank" rel="noopener">Uslovi korišćenja</a><br>Podrška: <a href="mailto:vasserviserbgd@gmail.com">vasserviserbgd@gmail.com</a><br>Autor: Željko Ilić · Gemb-Bit, Beograd</div></div>`;
   return o}
 
