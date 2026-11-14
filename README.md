@@ -31,6 +31,9 @@ Podaci o klijentima su samo na uređaju trenera i na njegovom Google Drive-u. Ap
 
 ## Verzije
 
+### 1.2
+- Uklonjen taster „Proveri ažuriranje“ — provera ide sama
+
 ### 1.1
 - U dnu aplikacije taster za Atmos Ishranu
 

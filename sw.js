@@ -1,4 +1,4 @@
-const CACHE = 'atmos-trener-v2';
+const CACHE = 'atmos-trener-v3';
 const ASSETS = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable.png', 'apple-touch-icon.png', 'privatnost.html', 'uslovi.html'];
 
 self.addEventListener('install', e => {
