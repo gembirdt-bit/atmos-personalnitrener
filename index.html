@@ -87,7 +87,7 @@ details summary{cursor:pointer;color:var(--muted);font-size:.85rem;padding:6px 0
 .coffee-x{position:absolute;top:6px;right:10px;width:auto;background:none;border:0;color:var(--txt);font-size:1.6rem;cursor:pointer;line-height:1;padding:4px 8px}
 .coffee-amts{display:flex;gap:6px;justify-content:center;margin-top:12px}.coffee-amts button{width:auto;padding:6px 12px;border-radius:10px;border:1px solid rgba(128,128,128,.45);background:rgba(128,128,128,.15);color:inherit;font:inherit;font-size:.85em;cursor:pointer}.coffee-amts button.on{background:var(--acc);border-color:var(--acc);color:#fff}.coffee-qrv svg{width:100%;height:100%;display:block}.coffee-qrv[hidden]{display:none}
 .coffee-mini{display:inline-block;width:auto;margin-top:8px;padding:5px 12px;font-size:.75rem;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--txt);cursor:pointer}.clk{cursor:pointer}.clk:active{opacity:.85}
-footer{text-align:center;color:var(--muted);font-size:.75rem;padding:10px}
+footer{text-align:center;color:var(--muted);font-size:.75rem;padding:10px 10px 76px}
 a{color:var(--acc)}
 
 .av{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.82rem;flex:none;letter-spacing:.3px}
@@ -131,7 +131,7 @@ a{color:var(--acc)}
 <div id="toast"></div>
 <script>
 'use strict';
-const VER='1.0',KEY='atmosTrener1',APP='Atmos Personalni trener';
+const VER='1.1',KEY='atmosTrener1',APP='Atmos Personalni trener';
 const ACCENTS=['#f0782f','#0f9d78','#3b82f6','#8b5cf6','#e11d48','#eab308'];
 const COLLS=['clients','sessions','measures','packages','templates','exercises'];
 const ST={zak:['Zakazan','📅','var(--p)'],odr:['Održan','✅','var(--ok)'],otk:['Otkazan','🚫','var(--muted)'],ndo:['Nije došao','❌','var(--bad)']};
@@ -232,7 +232,7 @@ function render(){document.documentElement.dataset.theme=S().theme==='auto'?(mat
   document.documentElement.style.setProperty('--acc',S().accent);
   $('#nav').innerHTML=TABS.map(t=>`<button class="${ui.tab===t[0]?'on':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
   const fn={danas:rToday,kalendar:rCal,klijenti:rClients,izvestaji:rReports,podesavanja:rSettings}[ui.tab]||rToday;
-  $('#app').innerHTML=fn()+`<footer>${APP} ${VER} · Gemb-Bit Željko Ilić<br><button class="coffee-mini" onclick="coffeeOpen()" type="button">☕ Doniraj autoru</button></footer>`;
+  $('#app').innerHTML=fn()+`<footer>${APP} ${VER} · Gemb-Bit Željko Ilić<br><button class="coffee-mini" onclick="coffeeOpen()" type="button">☕ Doniraj autoru</button> <a class="coffee-mini" style="text-decoration:none" href="https://gembirdt-bit.github.io/atmos-ishrana/" target="_blank" rel="noopener">🥗 Atmos Ishrana</a></footer>`;
   $('#fab').innerHTML=ui.tab==='klijenti'?`<button class="btn-p" data-act="newclient" title="Novi klijent">＋</button>`:ui.tab==='izvestaji'||ui.tab==='podesavanja'?'':`<button class="btn-p" data-act="newsess" title="Novi termin">＋</button>`;
   $('#gdst').textContent=gd.on?(gd.err?'☁️ ⚠':'☁️'):''}
 
