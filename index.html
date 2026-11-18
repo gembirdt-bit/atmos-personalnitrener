@@ -234,7 +234,7 @@ function render(){document.documentElement.dataset.theme=S().theme==='auto'?(mat
   document.documentElement.style.setProperty('--acc',S().accent);
   $('#nav').innerHTML=TABS.map(t=>`<button class="${ui.tab===t[0]?'on':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
   const fn={danas:rToday,kalendar:rCal,klijenti:rClients,izvestaji:rReports,podesavanja:rSettings}[ui.tab]||rToday;
-  $('#app').innerHTML=fn()+`<footer>${APP} ${VER} · Gemb-Bit Željko Ilić<br><button class="coffee-mini" onclick="coffeeOpen()" type="button">☕ Doniraj autoru</button> <a class="coffee-mini" style="text-decoration:none" href="https://gembirdt-bit.github.io/atmos-ishrana/" target="_blank" rel="noopener">🥗 Atmos Ishrana</a></footer>`;
+  $('#app').innerHTML=fn()+`<footer>${APP} ${VER} · Gemb-Bit Željko Ilić<br><button class="coffee-mini" onclick="coffeeOpen()" type="button">☕ Doniraj autoru</button> <a class="coffee-mini" style="text-decoration:none" href="https://gembirdt-bit.github.io/atmosaplikacije/" target="_blank" rel="noopener">📱 Sve Atmos aplikacije</a></footer>`;
   $('#fab').innerHTML=ui.tab==='klijenti'?`<button class="btn-p" data-act="newclient" title="Novi klijent">＋</button>`:ui.tab==='izvestaji'||ui.tab==='podesavanja'?'':`<button class="btn-p" data-act="newsess" title="Novi termin">＋</button>`;
   $('#gdst').textContent=gd.on?(gd.err?'☁️ ⚠':'☁️'):''}
 
