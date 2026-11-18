@@ -234,7 +234,7 @@ function render(){document.documentElement.dataset.theme=S().theme==='auto'?(mat
   document.documentElement.style.setProperty('--acc',S().accent);
   $('#nav').innerHTML=TABS.map(t=>`<button class="${ui.tab===t[0]?'on':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
   const fn={danas:rToday,kalendar:rCal,klijenti:rClients,izvestaji:rReports,podesavanja:rSettings}[ui.tab]||rToday;
-  $('#app').innerHTML=fn()+`<footer>${APP} ${VER} · Gemb-Bit Željko Ilić<br><button class="coffee-mini" onclick="coffeeOpen()" type="button">☕ Doniraj autoru</button> <a class="coffee-mini" style="text-decoration:none" href="https://gembirdt-bit.github.io/atmosaplikacije/" target="_blank" rel="noopener">📱 Sve Atmos aplikacije</a></footer>`;
+  $('#app').innerHTML=fn()+`<footer>${APP} ${VER} · zeljkoracunariborca<br><button class="coffee-mini" onclick="coffeeOpen()" type="button">☕ Doniraj autoru</button> <a class="coffee-mini" style="text-decoration:none" href="https://gembirdt-bit.github.io/atmosaplikacije/" target="_blank" rel="noopener">📱 Sve Atmos aplikacije</a></footer>`;
   $('#fab').innerHTML=ui.tab==='klijenti'?`<button class="btn-p" data-act="newclient" title="Novi klijent">＋</button>`:ui.tab==='izvestaji'||ui.tab==='podesavanja'?'':`<button class="btn-p" data-act="newsess" title="Novi termin">＋</button>`;
   $('#gdst').textContent=gd.on?(gd.err?'☁️ ⚠':'☁️'):''}
 
@@ -342,7 +342,7 @@ function rSettings(){const s=S();let o='';
   o+=`<div class="card"><h3>☕ Podrži autora</h3><div class="small muted" style="margin-bottom:10px">${APP} je besplatna. Ako ti se aplikacija sviđa, možeš da častiš autora kafom.</div><button class="btn-p" style="width:100%" onclick="coffeeOpen()" type="button">☕ Plati mi kafu</button></div>`;
   o+=`<div class="card"><h3>📱 Još Atmos aplikacija</h3><div class="small muted" style="margin-bottom:10px">Atmos Ishrana (kalorije — odlično za klijente), Atmos Dom, Atmos Auto — servisna knjižica, Atmos Dashboard i ostale besplatne aplikacije.</div><button class="btn-p" style="width:100%" data-act="apps">🌐 Otvori Atmos aplikacije</button></div>`;
   o+=`<div class="card"><h3>ℹ️ O aplikaciji</h3><div class="row sp" style="margin-bottom:8px"><span>Verzija <b>${VER}</b></span></div>
-   <div class="small muted" style="line-height:1.6">Podaci o klijentima čuvaju se na ovom uređaju i (ako ga povežeš) na tvom Google Drive-u — nigde drugde.<br><a href="privatnost.html" target="_blank" rel="noopener">Politika privatnosti</a> · <a href="uslovi.html" target="_blank" rel="noopener">Uslovi korišćenja</a><br>Podrška: <a href="mailto:vasserviserbgd@gmail.com">vasserviserbgd@gmail.com</a><br>Autor: Željko Ilić · Gemb-Bit, Beograd</div></div>`;
+   <div class="small muted" style="line-height:1.6">Podaci o klijentima čuvaju se na ovom uređaju i (ako ga povežeš) na tvom Google Drive-u — nigde drugde.<br><a href="privatnost.html" target="_blank" rel="noopener">Politika privatnosti</a> · <a href="uslovi.html" target="_blank" rel="noopener">Uslovi korišćenja</a><br>Podrška: <a href="mailto:vasserviserbgd@gmail.com">vasserviserbgd@gmail.com</a><br>Autor: zeljkoracunariborca</div></div>`;
   return o}
 
 /* ---------- DIJALOG: KLIJENT ---------- */

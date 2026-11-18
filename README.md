@@ -40,4 +40,4 @@ Podaci o klijentima su samo na uređaju trenera i na njegovom Google Drive-u. Ap
 ### 1.0
 - Prva verzija
 
-Podrška: vasserviserbgd@gmail.com · Gemb-Bit Željko Ilić · Ostale aplikacije: https://gembirdt-bit.github.io/atmosaplikacije/
+Podrška: vasserviserbgd@gmail.com · zeljkoracunariborca · Ostale aplikacije: https://gembirdt-bit.github.io/atmosaplikacije/
