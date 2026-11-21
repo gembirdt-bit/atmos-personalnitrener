@@ -31,6 +31,10 @@ Podaci o klijentima su samo na uređaju trenera i na njegovom Google Drive-u. Ap
 
 ## Verzije
 
+### 1.3
+- Automatska sinhronizacija sa Google Drive-om po paljenju aplikacije: odmah ako je Google dozvola još važeća, a ako je istekla — na prvi dodir ekrana, bez traženja tastera „Sinhronizuj“
+- Sinhronizacija i kad se aplikacija vrati iz pozadine
+
 ### 1.2
 - Uklonjen taster „Proveri ažuriranje“ — provera ide sama
 
